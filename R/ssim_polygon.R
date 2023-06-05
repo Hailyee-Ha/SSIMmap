@@ -14,10 +14,10 @@
 #'
 #' @return If global is TRUE, a string containing the global average SSIM, SIM, SIV, and SIP.
 #' If global is FALSE, a \code{sf} SpatialPolygonsDataFrame containing the SSIM, SIM, SIV, and SIP for each polygon.
-#' @export
+#' @export ssim_polygon
 
 
-
+# Functions ---------------------------------------------------------------
 
 ssim_polygon<-function(shape,map1,map2,global=TRUE,k1=NULL,k2=NULL,bandwidth=NULL,standardize=TRUE){
   if(map1==map2){
