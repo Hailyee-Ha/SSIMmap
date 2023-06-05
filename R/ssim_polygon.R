@@ -1,5 +1,27 @@
-ssim_polygon<-function(shape,var1,var2,global=TRUE,k1=NULL,k2=NULL,bandwidth=NULL,standardize=TRUE){
-  if(var1==var2){
+#' Calculate the structural similarity index measure for polygon-based maps.
+
+#' This function computes the SSIM, a measure of similarity between two maps for polygon data.
+#' The ssim_polygon function computes the SSIM for each polygon and can be returned as a global average or for each polygon as a \code{sf} object
+#'
+#' @param shape A SpatialPolygonsDataFrame containing the polygon data with attributes that can create polygon-based maps
+#' @param map1 the name of the first map to compare
+#' @param map2 the name of the second map to compare
+#' @param k1 the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.
+#' @param k2 the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.
+#' @param bandwidth Bandwidth for the Gaussian kernel used in the SSIM calculation. Default is NULL.
+#' @param standardize If TRUE, standardize the variables before computing the SSIM. Default is TRUE.
+#'
+#'
+#' @return If global is TRUE, a string containing the global average SSIM, SIM, SIV, and SIP.
+#' If global is FALSE, a \code{sf} SpatialPolygonsDataFrame containing the SSIM, SIM, SIV, and SIP for each polygon.
+#' @export
+
+
+
+
+
+ssim_polygon<-function(shape,map1,map2,global=TRUE,k1=NULL,k2=NULL,bandwidth=NULL,standardize=TRUE){
+  if(map1==map2){
     stop("variables are identical")
   }
   if(bandwidth < 12){
@@ -8,20 +30,20 @@ ssim_polygon<-function(shape,var1,var2,global=TRUE,k1=NULL,k2=NULL,bandwidth=NUL
 
   if(standardize){
     shape_df<-as.data.frame(shape)
-    shape_df$z_score_var1<-(shape_df[,var1]-mean(shape_df[,var1]))/sd(shape_df[,var1])
-    shape_df$z_score_var2<-(shape_df[,var2]-mean(shape_df[,var2]))/sd(shape_df[,var2])
-    min<-min(min(shape_df$z_score_var1),min(shape_df$z_score_var2))
-    shape_df$z_score_var1<-shape_df$z_score_var1-min
-    shape_df$z_score_var2<-shape_df$z_score_var2-min
-    z_scores<-as.data.frame(cbind(shape_df$z_score_var1,shape_df$z_score_var2))
+    shape_df$z_score_map1<-(shape_df[,map1]-mean(shape_df[,map1]))/sd(shape_df[,map1])
+    shape_df$z_score_map2<-(shape_df[,map2]-mean(shape_df[,map2]))/sd(shape_df[,map2])
+    min<-min(min(shape_df$z_score_map1),min(shape_df$z_score_map2))
+    shape_df$z_score_map1<-shape_df$z_score_map1-min
+    shape_df$z_score_map2<-shape_df$z_score_map2-min
+    z_scores<-as.data.frame(cbind(shape_df$z_score_map1,shape_df$z_score_map2))
     colnames(z_scores)<- paste0("zscore",colnames(z_scores))
-    names(z_scores)<- sub("V1",var1,names(z_scores))
-    names(z_scores)<- sub("V2",var2,names(z_scores))
+    names(z_scores)<- sub("V1",map1,names(z_scores))
+    names(z_scores)<- sub("V2",map2,names(z_scores))
     shape_merged<-cbind(shape,z_scores)
     shape_merged<-as(shape_merged,"Spatial")
-    var1<-as.character(colnames(z_scores[1]))
-    var2<-as.character(colnames(z_scores[2]))
-    result<-GWmodel::gwss(shape_merged,vars = c(var1,var2), kernel = "gaussian",adaptive = TRUE,bw=bandwidth)
+    map1<-as.character(colnames(z_scores[1]))
+    map2<-as.character(colnames(z_scores[2]))
+    result<-GWmodel::gwss(shape_merged,maps = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=bandwidth)
     gwss_result<-as.data.frame(result$SDF)
     mean<-dplyr::select(gwss_result,contains("LM"))
     sd<-dplyr::select(gwss_result,contains("LSD"))
@@ -35,7 +57,7 @@ ssim_polygon<-function(shape,var1,var2,global=TRUE,k1=NULL,k2=NULL,bandwidth=NUL
 
   else{
     shape_sp<-as(shape,"Spatial")
-    result<-GWmodel::gwss(shape_sp,vars = c(var1,var2), kernel = "gaussian",adaptive = TRUE,bw=bandwidth)
+    result<-GWmodel::gwss(shape_sp,maps = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=bandwidth)
     gwss_result<-as.data.frame(result$SDF)
     mean<-dplyr::select(gwss_result,contains("LM"))
     sd<-dplyr::select(gwss_result,contains("LSD"))
@@ -51,18 +73,18 @@ ssim_polygon<-function(shape,var1,var2,global=TRUE,k1=NULL,k2=NULL,bandwidth=NUL
 
 
   shape_df<-as.data.frame(merged_df)
-  var1<-as.data.frame(dplyr::select(shape_df,contains(var1)))
-  var2<-as.data.frame(dplyr::select(shape_df,contains(var2)))
+  map1<-as.data.frame(dplyr::select(shape_df,contains(map1)))
+  map2<-as.data.frame(dplyr::select(shape_df,contains(map2)))
 
-  globalMin <- min(var1,var2)
-  l<-max(var1,var2)
-  max<-max(var1,var2)
+  globalMin <- min(map1,map2)
+  l<-max(map1,map2)
+  max<-max(map1,map2)
 
-  var1_LM<-dplyr::select(var1,contains('_LM'))
-  var2_LM<-dplyr::select(var2,contains('_LM'))
-  var1_LSD<-dplyr::select(var1,contains('_LSD'))
-  var2_LSD<-dplyr::select(var2,contains('_LSD'))
-  Cov_var1_var2<-dplyr::select(shape_df,contains('Cov_'))
+  map1_LM<-dplyr::select(map1,contains('_LM'))
+  map2_LM<-dplyr::select(map2,contains('_LM'))
+  map1_LSD<-dplyr::select(map1,contains('_LSD'))
+  map2_LSD<-dplyr::select(map2,contains('_LSD'))
+  Cov_map1_map2<-dplyr::select(shape_df,contains('Cov_'))
   l <- l-globalMin
   options(scipen=999)
 
@@ -87,23 +109,23 @@ ssim_polygon<-function(shape,var1,var2,global=TRUE,k1=NULL,k2=NULL,bandwidth=NUL
   C2 <-(k[2]*l)^2
   C3 <-C2/2
 
-  mu1<-var1_LM
-  mu2<-var2_LM
-  sig1<-var1_LSD
-  sig2<-var2_LSD
-  sig12<-Cov_var1_var2
+  mu1<-map1_LM
+  mu2<-map2_LM
+  sig1<-map1_LSD
+  sig2<-map2_LSD
+  sig12<-Cov_map1_map2
   SIM<- ((2*mu1*mu2)+C1) / (mu1^2 + mu2^2 + C1)
   if(any(SIM>1) || any(SIM<0)){
-    stop("violating the boundness rule,you need to rescale the variables")
+    stop("violating the boundness rule,you need to rescale the attributes for maps")
   }
 
   SIV <- ((2*sig1*sig2)+C2) / (sig1^2 + sig2^2 + C2)
   if(any(SIV>1) || any(SIV<0)){
-    stop("violating the boundness rule,you need to rescale the variables")
+    stop("violating the boundness rule,you need to rescale the attributes for maps")
   }
   SIP <- (sig12 + C3) / (sig1 * sig2 + C3)
   if(any(SIP>1)|| any(SIP< (-1))){
-    stop("violating the boundness rule,you need to rescale the variables")
+    stop("violating the boundness rule,you need to rescale the attributes for maps")
   }
   SSIM <- SIM*SIV*SIP
   df<-as.data.frame(cbind(SSIM, SIM, SIV, SIP))

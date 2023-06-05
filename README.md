@@ -11,7 +11,7 @@ The goal of SSIMmap is to ...
 You can install the development version of SSIMmap from [GitHub](https://github.com/Hailyee-Ha/SSIMmap.git) with:
 
 ``` r
-# install.packages("devtools")
+install.packages("devtools")
 devtools::install_github("Hailyee-Ha/SSIMmap")
 ```
 
