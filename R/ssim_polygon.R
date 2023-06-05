@@ -14,11 +14,7 @@
 #'
 #' @return If global is TRUE, a string containing the global average SSIM, SIM, SIV, and SIP.
 #' If global is FALSE, a \code{sf} SpatialPolygonsDataFrame containing the SSIM, SIM, SIV, and SIP for each polygon.
-<<<<<<< HEAD
 #' @export
-=======
->>>>>>> 1178519d66f1c981ca0dc75bf63e0684a316148d
-
 
 
 
