@@ -1,0 +1,26 @@
+
+# SSIMmap
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of SSIMmap is to ...
+
+## Installation
+
+You can install the development version of SSIMmap from [GitHub](https://github.com/Hailyee-Ha/SSIMmap.git) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("Hailyee-Ha/SSIMmap")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+``` r
+library(SSIMmap)
+## basic example code
+```
+
