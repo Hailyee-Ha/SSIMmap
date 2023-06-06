@@ -45,7 +45,7 @@ shape<-SSIMmap::Toronto_example
 plot(shape$CIMD_SDD)
 plot(shape$PP_SDD)
 
-#Excution of bandwidht with maps above
+#Execution of bandwidth with maps above
 \donttest{
 bandwidth(shape,CIMD_SDD,PP_SDD,max_bandwidth=500)
 }
