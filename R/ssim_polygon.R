@@ -42,7 +42,7 @@ ssim_polygon<-function(shape,map1,map2,global=TRUE,k1=NULL,k2=NULL,bandwidth=NUL
     names(z_scores)<- sub("V1",map1,names(z_scores))
     names(z_scores)<- sub("V2",map2,names(z_scores))
     shape_merged<-cbind(shape,z_scores)
-    shape_merged<-as(shape_merged,"Spatial")
+    shape_merged<-sp::as(shape_merged,"Spatial")
     map1<-as.character(colnames(z_scores[1]))
     map2<-as.character(colnames(z_scores[2]))
     result<-GWmodel::gwss(shape_merged,maps = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=bandwidth)

@@ -75,7 +75,7 @@ bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standarize=TRUE
 
 
     bw=seq(from=12,to=max_bandwidth,by=1)
-    shape_merged<-as(shape_merged,"Spatial")
+    shape_merged<-sp::as(shape_merged,"Spatial")
     gwsses<-list()
 
     for(num in bw){
