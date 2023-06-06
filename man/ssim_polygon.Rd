@@ -2,8 +2,8 @@
 % Please edit documentation in R/ssim_polygon.R
 \name{ssim_polygon}
 \alias{ssim_polygon}
-\title{Calculate the structural similarity index measure for polygon-based maps.
-This function computes the SSIM, a measure of similarity between two maps for polygon data.
+\title{Calculate the structural similarity index measure for polygon maps.
+This function computes the SSIM, a measure of similarity between two polygon maps.
 The ssim_polygon function computes the SSIM for each polygon and can be returned as a global average or for each polygon as a \code{sf} object}
 \usage{
 ssim_polygon(
@@ -18,17 +18,20 @@ ssim_polygon(
 )
 }
 \arguments{
-\item{shape}{A SpatialPolygonsDataFrame containing the polygon data with attributes that can create polygon-based maps}
+\item{shape}{a SpatialPolygonsDataFrame containing the polygon data with attributes that can create polygon-based maps}
 
 \item{map1}{the name of the first map to compare}
 
 \item{map2}{the name of the second map to compare}
 
+\item{global}{If global is True, returning the global average of SSIM, SIM, SIV, and SIP. If the option is FALSE, a a \code{sf} SpatialPolygonsDataFrame containing the SSIM, SIM, SIV, and SIP for each polygon is returned
+Default is TRUE}
+
 \item{k1}{the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.}
 
 \item{k2}{the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.}
 
-\item{bandwidth}{Bandwidth for the Gaussian kernel used in the SSIM calculation. Default is NULL.}
+\item{bandwidth}{bandwidth for the Gaussian kernel weighting used in the SSIM calculation. Default is NULL.}
 
 \item{standardize}{If TRUE, standardize the variables before computing the SSIM. Default is TRUE.}
 }
@@ -37,7 +40,10 @@ If global is TRUE, a string containing the global average SSIM, SIM, SIV, and SI
 If global is FALSE, a \code{sf} SpatialPolygonsDataFrame containing the SSIM, SIM, SIV, and SIP for each polygon.
 }
 \description{
-Calculate the structural similarity index measure for polygon-based maps.
-This function computes the SSIM, a measure of similarity between two maps for polygon data.
+Calculate the structural similarity index measure for polygon maps.
+This function computes the SSIM, a measure of similarity between two polygon maps.
 The ssim_polygon function computes the SSIM for each polygon and can be returned as a global average or for each polygon as a \code{sf} object
+}
+\details{
+This function computes the SSIM index for two polygon maps.
 }
