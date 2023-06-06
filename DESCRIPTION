@@ -6,6 +6,7 @@ Authors@R:
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: This package is to calculate the the structural similarity index measure (SSIM) for maps: polygon-based(irregular lattice) maps and raster-based(regular lattice) maps
 Imports: 
+      stats,
       dplyr, 
       raster,
       sf, 

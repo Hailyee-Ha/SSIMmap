@@ -21,7 +21,8 @@
 #' @importFrom GWmodel gwss
 #'
 #' @examples
-#' # Load example sf polygon(Toronto Areas with attributes for maps:Pampalon Index,CIMD Index, and percentage of household commuting within the same Census Sub Division of residence)
+#' # Load example sf polygon Toronto Areas with attributes for maps:
+#' # Pampalon Index,CIMD Index, and percentage of household commuting within the same Census Sub Division of residence
 #' shape<-SSIMmap::polygon
 #'
 #' # Mapping two attributes
@@ -29,9 +30,7 @@
 #' plot(shape$PP_SDD)
 #'
 #' #Execution of bandwidth with maps above
-#' \donttest{
-#' bandwidth(shape,CIMD_SDD,PP_SDD,max_bandwidth=500)
-#' }
+#' \donttest{ bandwidth(shape,CIMD_SDD,PP_SDD,max_bandwidth=500) }
 #'
 #' @export bandwidth
 

@@ -39,7 +39,7 @@ Users can select the bandwidth values from the range of the optimal trade-off,wh
 }
 \examples{
 # Load example sf polygon(Toronto Areas with attributes for maps:Pampalon Index,CIMD Index, and percentage of household commuting within the same Census Sub Division of residence)
-shape<-SSIMmap::Toronto_example
+shape<-SSIMmap::polygon
 
 # Mapping two attributes
 plot(shape$CIMD_SDD)

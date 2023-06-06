@@ -30,5 +30,7 @@ This function calculates the SSIM, a measure of similarity between two raster im
 This function computes the SSIM index for two raster images.
 }
 \examples{
+img1<-SSIMmap::raster_data1
+img2<-SSIMmap::raster_data2
 ssim_raster(img1,img2)
 }

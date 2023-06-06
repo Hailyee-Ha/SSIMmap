@@ -15,6 +15,7 @@
 #' img1<-SSIMmap::raster_data1
 #' img2<-SSIMmap::raster_data2
 #' ssim_raster(img1,img2)
+#' @export ssim_raster
 
 
 ssim_raster<- function(img1, img2, global=TRUE, w=3,k1=NULL,k2=NULL) {
