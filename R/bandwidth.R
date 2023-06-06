@@ -78,7 +78,7 @@ bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standarize=TRUE
     gwsses<-list()
 
     for(num in bw){
-      result<-GWmodel::gwss(shape_merged,maps = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=num)
+      result<-GWmodel::gwss(shape_merged,vars = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=num)
       gwsses[[num]]<-result$SDF
     }
     df_t<-as.data.frame(matrix())
@@ -99,7 +99,7 @@ bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standarize=TRUE
     shape<-sf::as_Spatial(shape)
     gwsses<-list()
     for(num in bw){
-      result<-GWmodel::gwss(shape,maps = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=num)
+      result<-GWmodel::gwss(shape,vars = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=num)
       gwsses[[num]]<-result$SDF
     }
     df_t<-as.data.frame(matrix())
