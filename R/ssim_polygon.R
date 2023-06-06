@@ -42,7 +42,7 @@ ssim_polygon<-function(shape,map1,map2,global=TRUE,k1=NULL,k2=NULL,bandwidth=NUL
     names(z_scores)<- sub("V1",map1,names(z_scores))
     names(z_scores)<- sub("V2",map2,names(z_scores))
     shape_merged<-cbind(shape,z_scores)
-    shape_merged<-sp::as(shape_merged,"Spatial")
+    shape_merged<-sf::as_Spatial(shape_merged)
     map1<-as.character(colnames(z_scores[1]))
     map2<-as.character(colnames(z_scores[2]))
     result<-GWmodel::gwss(shape_merged,maps = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=bandwidth)
@@ -58,7 +58,7 @@ ssim_polygon<-function(shape,map1,map2,global=TRUE,k1=NULL,k2=NULL,bandwidth=NUL
   }
 
   else{
-    shape_sp<-as(shape,"Spatial")
+    shape_sp<-sf::as_Spatial(shape)
     result<-GWmodel::gwss(shape_sp,maps = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=bandwidth)
     gwss_result<-as.data.frame(result$SDF)
     mean<-dplyr::select(gwss_result,contains("LM"))
