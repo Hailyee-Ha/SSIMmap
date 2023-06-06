@@ -12,20 +12,22 @@
 #' @return If global is True, returning the global average of SSIM, SIM, SIV, and SIP. If the option is FALSE, a \code{raster} raster brick containing the SSIM, SIM, SIV, and SIP for each cell is returned
 #' @details This function computes the SSIM index for two raster images.
 #' @examples
+#' img1<-SSIMmap::raster_data1
+#' img2<-SSIMmap::raster_data2
 #' ssim_raster(img1,img2)
 
 
 ssim_raster<- function(img1, img2, global=TRUE, w=3,k1=NULL,k2=NULL) {
 
   #Check to see if extents are equal
-  img1.extent <- extent(img1)
-  img2.extent <- extent(img2)
-  img1.na <- Which(is.na(img1),cells=TRUE)
+  img1.extent <- raster::extent(img1)
+  img2.extent <- raster::extent(img2)
+  img1.na <- raster::Which(is.na(img1),cells=TRUE)
   if (img1.extent != img2.extent){stop('Warning: SSIM calculation aborted. The raster extents do not match.')}
 
   #set constants
-  l <- max(cellStats(img1, max), cellStats(img2, max))
-  globalMin <- abs(min(cellStats(img1, min), cellStats(img2, min)))
+  l <- max(raster::cellStats(img1, max), raster::cellStats(img2, max))
+  globalMin <- abs(min(raster::cellStats(img1, min), raster::cellStats(img2, min)))
   l <- l - globalMin
 
   if(is.null(k1)){
@@ -52,13 +54,13 @@ ssim_raster<- function(img1, img2, global=TRUE, w=3,k1=NULL,k2=NULL) {
 
 
   #get mu
-  mu1 <- focal(img1, filterx)
-  mu2 <- focal(img2, filterx)
+  mu1 <- raster::focal(img1, filterx)
+  mu2 <- raster::focal(img2, filterx)
 
-  sig1 <- abs(focal(img1*img1,filterx) - mu1*mu1)^0.5
-  sig2 <- abs(focal(img2*img2,filterx) - mu2*mu2)^0.5
+  sig1 <- abs(raster::focal(img1*img1,filterx) - mu1*mu1)^0.5
+  sig2 <- abs(raster::focal(img2*img2,filterx) - mu2*mu2)^0.5
   #sig12 relates to correlation
-  sig12 <- focal(img1*img2, filterx) - mu1*mu2
+  sig12 <- raster::focal(img1*img2, filterx) - mu1*mu2
 
   #compute components
   L <- ((2*mu1*mu2)+C1) / (mu1^2 + mu2^2 + C1)
@@ -68,15 +70,15 @@ ssim_raster<- function(img1, img2, global=TRUE, w=3,k1=NULL,k2=NULL) {
   SSIM2 <- L * C * S
 
   #Compute RasterBrick
-  ssim.brick <- brick(SSIM2, L, C, S)
-  ssim.brick <- crop(ssim.brick,img1.extent)
+  ssim.brick <- raster::brick(SSIM2, L, C, S)
+  ssim.brick <- raster::crop(ssim.brick,img1.extent)
   ssim.brick[img1.na] <- NA
 
   ssim.brick@data@names <- c('SSIM', 'SIM', 'SIV', 'SIP')
-  mean_SSIM <- cellStats(ssim.brick[['SSIM']], stat = 'mean', na.rm = TRUE)
-  mean_SIM <- cellStats(ssim.brick[['SIM']], stat = 'mean', na.rm = TRUE)
-  mean_SIV <- cellStats(ssim.brick[['SIV']], stat = 'mean', na.rm = TRUE)
-  mean_SIP <- cellStats(ssim.brick[['SIP']], stat = 'mean', na.rm = TRUE)
+  mean_SSIM <- raster::cellStats(ssim.brick[['SSIM']], stat = 'mean', na.rm = TRUE)
+  mean_SIM <- raster::cellStats(ssim.brick[['SIM']], stat = 'mean', na.rm = TRUE)
+  mean_SIV <- raster::cellStats(ssim.brick[['SIV']], stat = 'mean', na.rm = TRUE)
+  mean_SIP <- raster::cellStats(ssim.brick[['SIP']], stat = 'mean', na.rm = TRUE)
 
   if(global){
     result <- paste("SSIM:", round(mean_SSIM, 5),
