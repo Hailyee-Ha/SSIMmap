@@ -1,14 +1,14 @@
-#' Calculate the structural similarity index measure for polygon-based maps.
+#' Calculate the structural similarity index measure for polygon maps.
 
-#' This function computes the SSIM, a measure of similarity between two maps for polygon data.
+#' This function computes the SSIM, a measure of similarity between two polygon maps.
 #' The ssim_polygon function computes the SSIM for each polygon and can be returned as a global average or for each polygon as a \code{sf} object
 #'
-#' @param shape A SpatialPolygonsDataFrame containing the polygon data with attributes that can create polygon-based maps
+#' @param shape a SpatialPolygonsDataFrame containing the polygon data with attributes that can create polygon-based maps
 #' @param map1 the name of the first map to compare
 #' @param map2 the name of the second map to compare
 #' @param k1 the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.
 #' @param k2 the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.
-#' @param bandwidth Bandwidth for the Gaussian kernel used in the SSIM calculation. Default is NULL.
+#' @param bandwidth bandwidth for the Gaussian kernel weighting used in the SSIM calculation. Default is NULL.
 #' @param standardize If TRUE, standardize the variables before computing the SSIM. Default is TRUE.
 #'
 #'

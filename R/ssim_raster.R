@@ -1,4 +1,21 @@
-ssim_raster<- function(img1, img2, w=3,k1=NULL,k2=NULL) {
+#' Calculate SSIM index for raster images
+#'
+#' This function calculates the SSIM, a measure of similarity between two raster images
+#'
+#' @param img1 Raster object representing the first image.
+#' @param img2 Raster object representing the second image.
+#' @param global If global is True, returning the global average of SSIM, SIM, SIV, and SIP. If the option is FALSE, a a \code{raster} raster brick containing the SSIM, SIM, SIV, and SIP for each cell is returned
+#' Default is TRUE
+#' @param w Integer specifying the window size for the local neighborhood. Default is 3.
+#' @param k1 the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.
+#' @param k2 the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.
+#' @return If global is True, returning the global average of SSIM, SIM, SIV, and SIP. If the option is FALSE, a \code{raster} raster brick containing the SSIM, SIM, SIV, and SIP for each cell is returned
+#' @details This function computes the SSIM index for two raster images.
+#' @examples
+#' ssim_raster(img1,img2)
+
+
+ssim_raster<- function(img1, img2, global=TRUE, w=3,k1=NULL,k2=NULL) {
 
   #Check to see if extents are equal
   img1.extent <- extent(img1)
@@ -56,6 +73,23 @@ ssim_raster<- function(img1, img2, w=3,k1=NULL,k2=NULL) {
   ssim.brick[img1.na] <- NA
 
   ssim.brick@data@names <- c('SSIM', 'SIM', 'SIV', 'SIP')
-  return(ssim.brick)
+  mean_SSIM <- cellStats(ssim.brick[['SSIM']], stat = 'mean', na.rm = TRUE)
+  mean_SIM <- cellStats(ssim.brick[['SIM']], stat = 'mean', na.rm = TRUE)
+  mean_SIV <- cellStats(ssim.brick[['SIV']], stat = 'mean', na.rm = TRUE)
+  mean_SIP <- cellStats(ssim.brick[['SIP']], stat = 'mean', na.rm = TRUE)
+
+  if(global){
+    result <- paste("SSIM:", round(mean_SSIM, 5),
+                    "SIM:", round(mean_SIM, 5),
+                    "SIV:", round(mean_SIV, 5),
+                    "SIP:", round(mean_SIP, 5),
+                    sep = " ")
+
+
+    cat(result, "\n")}
+
+  else{
+    return(ssim.brick)
+  }
 }
 

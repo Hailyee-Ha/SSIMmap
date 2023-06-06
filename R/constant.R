@@ -1,21 +1,44 @@
-constant<-function(shape,var1,var2,standardize=TRUE){
-  if(var1==var2){
-    stop("variables are identical")
+#' Calcualte rescaled constants for SSIM Index
+#'
+#' This function calculates the rescaled constants (k1 and k2) for the SSIM index based on the global maximum value of the maps
+#' @param shape a SpatialPolygonsDataFrame containing the polygon data with attributes that can create polygon-based maps
+#' @param map1 the name of the first map to compare
+#' @param map2 the name of the second map to compare
+#' @param standardize If TRUE, standardize the variables before computing the SSIM. Default is TRUE.
+#'
+#' @return The rescaled constants (k1 and k2)
+#' @details This function calculates the rescaled constants (k1 and k2) for the SSIM index.
+#' k1 and k2 in the original SSIM method,which are for the 8-bit grey scale images, are 0.01 and 0.03 respectively.
+#' The SSIM for maps can use the rescaled k1 and k2 based on the global maximum value of two maps.
+#'
+#' @examples
+#' #' # Load example sf polygon(Toronto Areas with attributes for maps:Pampalon Index,CIMD Index, and percentage of household commuting within the same Census Sub Division of residence)
+#' shape<-SSIMmap::Toronto_example
+#'
+#' constant(shape,"PP_SDD","CIMD_SDD")
+#'
+#' @export constant
+
+# Functions ---------------------------------------------------------------
+
+constant<-function(shape,map1,map2,standardize=TRUE){
+  if(map1==map2){
+    stop("maps are identical")
   }
 
   if(standardize){
     shape_df<-as.data.frame(shape)
-    shape_df$z_score_var1<-(shape_df[,var1]-mean(shape_df[,var1]))/sd(shape_df[,var1])
-    shape_df$z_score_var2<-(shape_df[,var2]-mean(shape_df[,var2]))/sd(shape_df[,var2])
-    min<-min(min(shape_df$z_score_var1),min(shape_df$z_score_var2))
-    shape_df$z_score_var1<-shape_df$z_score_var1-min
-    shape_df$z_score_var2<-shape_df$z_score_var2-min
-    max<-max(shape_df$z_score_var1,shape_df$z_score_var2)
+    shape_df$z_score_map1<-(shape_df[,map1]-mean(shape_df[,map1]))/sd(shape_df[,map1])
+    shape_df$z_score_map2<-(shape_df[,map2]-mean(shape_df[,map2]))/sd(shape_df[,map2])
+    min<-min(min(shape_df$z_score_map1),min(shape_df$z_score_map2))
+    shape_df$z_score_map1<-shape_df$z_score_map1-min
+    shape_df$z_score_map2<-shape_df$z_score_map2-min
+    max<-max(shape_df$z_score_map1,shape_df$z_score_map2)
   }
 
   else{
     shape_df<-as.data.frame(shape)
-    max<-max(shape_df[,var1],shape_df[,var2])
+    max<-max(shape_df[,map1],shape_df[,map2])
   }
 
 

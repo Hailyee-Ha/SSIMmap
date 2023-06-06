@@ -1,4 +1,4 @@
-#' Finding bandwidth ranges for thr SSIM Index for polygon maps
+#' Finding bandwidth ranges for the SSIM Index for polygon maps
 #'
 #' This function calculates the range of the bandwidth for the SSIM index using the square root of N and optimal trade-off between bias and variance
 #'
@@ -25,10 +25,9 @@
 #' # Load example sf polygon(Toronto Areas with attributes for maps:Pampalon Index,CIMD Index, and percentage of household commuting within the same Census Sub Division of residence)
 #' shape<-SSIMmap::Toronto_example
 #'
-#' # Mapping three attributes
+#' # Mapping two attributes
 #' plot(shape$CIMD_SDD)
 #' plot(shape$PP_SDD)
-#' plot(shape$P_commute)
 #'
 #' #Excution of bandwidht with maps above
 #' \donttest{
