@@ -45,9 +45,6 @@ ssim_polygon<-function(shape,map1,map2,standardize=TRUE,bandwidth=NULL,k1=NULL,k
   if(map1==map2){
     stop("variables are identical")
   }
-  if(bandwidth < 12){
-    stop("The Bandwdith is too small to calculate the SSIM for the irregular lattice maps")
-  }
 
   num_rows <- nrow(shape)
   sqrt_num_rows <- round(sqrt(num_rows),0)
