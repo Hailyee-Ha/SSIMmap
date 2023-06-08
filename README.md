@@ -4,7 +4,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of SSIMmap is to offer a comprehensive set of tools for working with Structural Similarity Index (SSIM) for map comparisons. The SSIMmap package includes four key functions for calculating the similarities between maps: *(ssim_bandwidth)*, *(ssim_constant)*, *(ssim_polygon)*,*(ssim_raster)*. Users who want to compare two maps and quantify their similarities can utilize this package and visualize the results using other tools(e.g.,\code {tmap} and \code{ggplot}).  
+The goal of the _SSIMmap_ package is to offer a comprehensive set of tools for working with Structural Similarity Index (SSIM) for map comparisons.The original SSIM develop to compare two image mimicking the human visual system, which is presented in the [paper](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=1284395). _SSIMmap_ package applied this method to maps (polygon and raster). The package includes four key functions for calculating the similarities between maps: **ssim_bandwidth**, **ssim_constant**, **ssim_polygon**,**ssim_raster**. Users who want to compare two maps and quantify their similarities can utilize this package and visualize the results using other tools(e.g.,\code{tmap} and \code{ggplot}).  
 
 ## Installation
 
@@ -23,13 +23,14 @@ library(SSIMmap)
 
 ## Functions
 SSIMmap includes the following key functions:
-1) *(ssim_bandwidth)*: This function calculates the bandwidth size for the computation of the SSIM on polygon maps. It offers two options for selecting the bandwidth size from two methods:1.square root of N and 2. the best trade-off between bias and variance. The function takes as input a shape file(\code {sf} polygon) including columns for the SSIM calculation and returns the two options for selecting bandwidth sizes on the basis of two methods. It also provides a plot illustrating the bias and variance against the size of bandwidth. 
 
-2) *(ssim_constant)*: This function calculates constants(k1 and k2) for the computation of the SSIM on polygon maps. It takes as input a shape file(\code {sf} polygon) including columns for the SSIM calculation and returns the constants on the console window.
+1) **ssim_bandwidth**: This function calculates the bandwidth size for the computation of the SSIM on polygon maps. It offers two options for selecting the bandwidth size from two methods:1.square root of N and 2. the best trade-off between bias and variance. The function takes as input a shape file(\code{sf} polygon) including columns for the SSIM calculation and returns the two options for selecting bandwidth sizes on the basis of two methods. It also provides a plot illustrating the bias and variance against the size of bandwidth. 
 
-3) *(ssim_polygon)*: This function calculates the SSIM index for a given polygon. It takes as input a shape file(\code {sf} polygon) including columns for the SSIM calculation and returns either the global SSIM values  (global=TRUE) or the SSIM values for each given polygon as the local SSIM  (global=FALSE).
+2) **ssim_constant**: This function calculates constants(k1 and k2) for the computation of the SSIM on polygon maps. It takes as input a shape file(\code{sf}) including columns for the SSIM calculation and returns the constants on the console window.
 
-4) *(ssim_raster)*: This function calculates the SSIM index for raster images. It takes as input a image file(\code {terra} raster) and returns either the global SSIM values (global=TRUE) or the SSIM values for each given cell as the local SSIM (global false)
+3) **ssim_polygon**: This function calculates the SSIM index for a given polygon. It takes as input a shape file(\code{sf}) including columns for the SSIM calculation and returns either the global SSIM values  (global=TRUE) or the SSIM values for each given polygon as the local SSIM  (global=FALSE).
+
+4) **ssim_raster**: This function calculates the SSIM index for raster images. It takes as input a image file(\code{terra}) and returns either the global SSIM values (global=TRUE) or the SSIM values for each given cell as the local SSIM (global false)
 
 ## Example
 Here is a basic example which shows you how to use the package:
