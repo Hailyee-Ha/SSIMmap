@@ -72,7 +72,9 @@ ssim_polygon<-function(shape,map1,map2,standardize=TRUE,bandwidth=NULL,k1=NULL,k
       result<-GWmodel::gwss(shape_merged,vars = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=sqrt_num_rows)
 
     }
-    result<-GWmodel::gwss(shape_merged,vars = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=bandwidth)
+    else{
+      result<-GWmodel::gwss(shape_merged,vars = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=bandwidth)
+    }
     gwss_result<-as.data.frame(result$SDF)
     mean<-dplyr::select(gwss_result,contains("LM"))
     sd<-dplyr::select(gwss_result,contains("LSD"))
@@ -86,11 +88,13 @@ ssim_polygon<-function(shape,map1,map2,standardize=TRUE,bandwidth=NULL,k1=NULL,k
 
   else{
     shape_sp<-sf::as_Spatial(shape)
+
     if(is.null(bandwidth)){
       result<-GWmodel::gwss(shape_merged,vars = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=sqrt_num_rows)
 
-    }
+    }else{
     result<-GWmodel::gwss(shape_sp,vars = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=bandwidth)
+    }
     gwss_result<-as.data.frame(result$SDF)
     mean<-dplyr::select(gwss_result,contains("LM"))
     sd<-dplyr::select(gwss_result,contains("LSD"))
