@@ -2,7 +2,7 @@
 #'
 #' This function calculates the range of the bandwidth for the SSIM index using the square root of N and optimal trade-off between bias and variance
 #'
-#' @param shape a SpatialPolygonsDataFrame containing the polygon data with attributes that can create polygon-based maps
+#' @param shape a \code{sf} polygon containing the polygon data with attributes that can create polygon-based maps
 #' @param map1 the name of the first map to compare
 #' @param map2 the name of the second map to compare
 #' @param max_bandwidth maximum size of the bandwidth, and the maximum size needs to be larger than 12
@@ -37,7 +37,7 @@
 
 # Functions ---------------------------------------------------------------
 
-bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standarize=TRUE,option="midpoint"){
+ssim_bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standarize=TRUE,option="midpoint"){
 
   if(map1==map2){
     stop("variables are identical")

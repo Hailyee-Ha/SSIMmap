@@ -11,6 +11,9 @@
 #' @param k2 the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.
 #' @return If global is True, returning the global average of SSIM, SIM, SIV, and SIP. If the option is FALSE, a \code{raster} raster brick containing the SSIM, SIM, SIV, and SIP for each cell is returned
 #' @details This function computes the SSIM index for two raster images.
+#'
+#' @importFrom terra extent cellStats Which focal brick crop
+#'
 #' @examples
 #' img1<-SSIMmap::raster_data1
 #' img2<-SSIMmap::raster_data2

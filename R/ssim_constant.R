@@ -13,12 +13,13 @@
 #'
 #' @examples
 #' #' # Load example sf polygon
-#' Toronto Areas with attributes for maps:Pampalon Index,CIMD Index, and percentage of household commuting within the same Census Sub Division of residence)
+#' Toronto Areas with attributes for maps:Pampalon Index,CIMD Index,
+#' and percentage of household commuting within the same Census Sub Division of residence)
 #' shape<-SSIMmap::polygon
 #'
-#' constant(shape,"PP_SDD","CIMD_SDD")
+#' ssim_constant(shape,"PP_SDD","CIMD_SDD")
 #'
-#' @export constant
+#' @export ssim_constant
 
 # Functions ---------------------------------------------------------------
 

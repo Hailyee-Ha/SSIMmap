@@ -10,19 +10,38 @@
 #' Default is TRUE
 #' @param k1 the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.
 #' @param k2 the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.
-#' @param bandwidth bandwidth for the Gaussian kernel weighting used in the SSIM calculation. Default is NULL.
+#' @param bandwidth bandwidth for the Gaussian kernel weighting used in the SSIM calculation. Default is the square root of N
 #' @param standardize If TRUE, standardize the variables before computing the SSIM. Default is TRUE.
 #'
 #'
 #' @details This function computes the SSIM index for two polygon maps.
 #' @return If global is TRUE, a string containing the global average SSIM, SIM, SIV, and SIP.
 #' If global is FALSE, a \code{sf} polygon containing the SSIM, SIM, SIV, and SIP for each polygon.
+#'
+#' @importFrom sf as_Spatial
+#' @importFrom dplyr select contains
+#' @importFrom GWmodel gwss
+#' @examples
+#' # Load example sf polygon Toronto Areas with attributes for maps:
+#' # Pampalon Index,CIMD Index,
+#' #and percentage of household commuting within the same Census Sub Division of residence
+#' shape<-SSIMmap::polygon
+#'
+#' # Mapping two attributes
+#' plot(shape$CIMD_SDD)
+#' plot(shape$PP_SDD)
+#' #Finding global ssim
+#'
+#' ssim_polygon(shape,"CIMD_SDD","PP_SDD")
+#' #Finding local ssim
+#' df<-ssim_polygon(shape,"CIMD_SDD","PP_SDD",global=FALSE)
+
 #' @export ssim_polygon
 
 
 # Functions ---------------------------------------------------------------
 
-ssim_polygon<-function(shape,map1,map2,global=TRUE,k1=NULL,k2=NULL,bandwidth=NULL,standardize=TRUE){
+ssim_polygon<-function(shape,map1,map2,standardize=TRUE,bandwidth=NULL,k1=NULL,k2=NULL,global=TRUE){
   if(map1==map2){
     stop("variables are identical")
   }
