@@ -15,8 +15,8 @@
 #' @importFrom terra  global  focal rast crop
 #'
 #' @examples
-#' img1<-SSIMmap::raster_data1
-#' img2<-SSIMmap::raster_data2
+#' img1<-SSIMmap::groups2nm
+#' img2<-SSIMmap::single2nm
 #' ssim_raster(img1,img2)
 #' @export ssim_raster
 
