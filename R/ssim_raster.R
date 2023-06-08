@@ -25,8 +25,8 @@ ssim_raster<- function(img1, img2, global=TRUE, w=3,k1=NULL,k2=NULL) {
 
 
   #set constants
-  l <- max(terra::global(img1, max), terra::global(img2, max))
-  globalMin <- abs(min(terra::global(img1, min), terra::global(img2, min)))
+  l <- max(terra::global(img1, fun= max), terra::global(img2, fun= max))
+  globalMin <- abs(min(terra::global(img1, fun= min), terra::global(img2, fun= min)))
   l <- l - globalMin
 
   if(is.null(k1)){
