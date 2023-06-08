@@ -3,9 +3,9 @@
 #' This function computes the SSIM, a measure of similarity between two polygon maps.
 #' The ssim_polygon function computes the SSIM for each polygon and can be returned as a global average or for each polygon as a \code{sf} object
 #'
-#' @param shape a SpatialPolygonsDataFrame containing the polygon data with attributes that can create polygon-based maps
-#' @param map1 the name of the first map to compare
-#' @param map2 the name of the second map to compare
+#' @param shape a a \code{sf} polygon containing the polygon data with attributes that can create polygon-based maps
+#' @param map1 the name of the first map to compare as a column in the shape
+#' @param map2 the name of the second map to compare as a column in the shape
 #' @param global If global is True, returning the global average of SSIM, SIM, SIV, and SIP. If the option is FALSE, a a \code{sf} SpatialPolygonsDataFrame containing the SSIM, SIM, SIV, and SIP for each polygon is returned
 #' Default is TRUE
 #' @param k1 the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.

@@ -3,10 +3,10 @@
 #' This function calculates the range of the bandwidth for the SSIM index using the square root of N and optimal trade-off between bias and variance
 #'
 #' @param shape a \code{sf} polygon containing the polygon data with attributes that can create polygon-based maps
-#' @param map1 the name of the first map to compare
-#' @param map2 the name of the second map to compare
+#' @param map1 the name of the first map to compare as a column in the shape
+#' @param map2 the name of the second map to compare as a column in the shape
 #' @param max_bandwidth maximum size of the bandwidth, and the maximum size needs to be larger than 12
-#' @param standardize if TRUE, standardize the variables before computing the SSIM. Default is TRUE.
+#' @param standardize if TRUE, standardize the variables before computing the SSIM. Default is TRUE
 #' @param option the option for selecting the range of the bandwidth derived from the optimal trade-off between bias and variance. Default is "midpoint"
 #'
 #' @return a plot showing the bias/variance trade off and the range of the optimal trade-off as vertical lines including the square root of N results as well. In addition, the console shows the results.
@@ -22,7 +22,8 @@
 #'
 #' @examples
 #' # Load example sf polygon Toronto Areas with attributes for maps:
-#' # Pampalon Index,CIMD Index, and percentage of household commuting within the same Census Sub Division of residence
+#' # Pampalon Index,CIMD Index,
+#' #and percentage of household commuting within the same Census Sub Division of residence
 #' shape<-SSIMmap::polygon
 #'
 #' # Mapping two attributes
@@ -30,9 +31,9 @@
 #' plot(shape$PP_SDD)
 #'
 #' #Execution of bandwidth with maps above
-#' \donttest{ bandwidth(shape,CIMD_SDD,PP_SDD,max_bandwidth=500) }
+#' \donttest{ ssim_bandwidth(shape,CIMD_SDD,PP_SDD,max_bandwidth=500) }
 #'
-#' @export bandwidth
+#' @export ssim_bandwidth
 
 
 # Functions ---------------------------------------------------------------
