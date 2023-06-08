@@ -12,7 +12,7 @@
 #' @return If global is True, returning the global average of SSIM, SIM, SIV, and SIP. If the option is FALSE, a \code{raster} raster brick containing the SSIM, SIM, SIV, and SIP for each cell is returned
 #' @details This function computes the SSIM index for two raster images.
 #'
-#' @importFrom terra extent cellStats Which focal brick crop
+#' @importFrom terra  global  focal rast crop
 #'
 #' @examples
 #' img1<-SSIMmap::raster_data1
@@ -23,15 +23,10 @@
 
 ssim_raster<- function(img1, img2, global=TRUE, w=3,k1=NULL,k2=NULL) {
 
-  #Check to see if extents are equal
-  img1.extent <- terra::extent(img1)
-  img2.extent <- terra::extent(img2)
-  img1.na <- terra::Which(is.na(img1),cells=TRUE)
-  if (img1.extent != img2.extent){stop('Warning: SSIM calculation aborted. The raster extents do not match.')}
 
   #set constants
-  l <- max(terra::cellStats(img1, max), terra::cellStats(img2, max))
-  globalMin <- abs(min(terra::cellStats(img1, min), terra::cellStats(img2, min)))
+  l <- max(terra::global(img1, max), terra::global(img2, max))
+  globalMin <- abs(min(terra::global(img1, min), terra::global(img2, min)))
   l <- l - globalMin
 
   if(is.null(k1)){
@@ -74,15 +69,15 @@ ssim_raster<- function(img1, img2, global=TRUE, w=3,k1=NULL,k2=NULL) {
   SSIM2 <- L * C * S
 
   #Compute RasterBrick
-  ssim.brick <- terra::brick(SSIM2, L, C, S)
+  ssim.brick <- terra::rast(SSIM2, L, C, S)
   ssim.brick <- terra::crop(ssim.brick,img1.extent)
   ssim.brick[img1.na] <- NA
 
   ssim.brick@data@names <- c('SSIM', 'SIM', 'SIV', 'SIP')
-  mean_SSIM <- terra::cellStats(ssim.brick[['SSIM']], stat = 'mean', na.rm = TRUE)
-  mean_SIM <- terra::cellStats(ssim.brick[['SIM']], stat = 'mean', na.rm = TRUE)
-  mean_SIV <- terra::cellStats(ssim.brick[['SIV']], stat = 'mean', na.rm = TRUE)
-  mean_SIP <- terra::cellStats(ssim.brick[['SIP']], stat = 'mean', na.rm = TRUE)
+  mean_SSIM <- terra::global(ssim.brick[['SSIM']], stat = 'mean', na.rm = TRUE)
+  mean_SIM <- terra::global(ssim.brick[['SIM']], stat = 'mean', na.rm = TRUE)
+  mean_SIV <- terra::global(ssim.brick[['SIV']], stat = 'mean', na.rm = TRUE)
+  mean_SIP <- terra::global(ssim.brick[['SIP']], stat = 'mean', na.rm = TRUE)
 
   if(global){
     result <- paste("SSIM:", round(mean_SSIM, 5),

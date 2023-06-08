@@ -10,34 +10,34 @@ ssim_polygon(
   shape,
   map1,
   map2,
-  global = TRUE,
+  standardize = TRUE,
+  bandwidth = NULL,
   k1 = NULL,
   k2 = NULL,
-  bandwidth = NULL,
-  standardize = TRUE
+  global = TRUE
 )
 }
 \arguments{
-\item{shape}{a SpatialPolygonsDataFrame containing the polygon data with attributes that can create polygon-based maps}
+\item{shape}{a a \code{sf} polygon containing the polygon data with attributes that can create polygon-based maps}
 
-\item{map1}{the name of the first map to compare}
+\item{map1}{the name of the first map to compare as a column in the shape}
 
-\item{map2}{the name of the second map to compare}
+\item{map2}{the name of the second map to compare as a column in the shape}
 
-\item{global}{If global is True, returning the global average of SSIM, SIM, SIV, and SIP. If the option is FALSE, a a \code{sf} SpatialPolygonsDataFrame containing the SSIM, SIM, SIV, and SIP for each polygon is returned
-Default is TRUE}
+\item{standardize}{If TRUE, standardize the variables before computing the SSIM. Default is TRUE.}
+
+\item{bandwidth}{bandwidth for the Gaussian kernel weighting used in the SSIM calculation. Default is the square root of N}
 
 \item{k1}{the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.}
 
 \item{k2}{the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.}
 
-\item{bandwidth}{bandwidth for the Gaussian kernel weighting used in the SSIM calculation. Default is NULL.}
-
-\item{standardize}{If TRUE, standardize the variables before computing the SSIM. Default is TRUE.}
+\item{global}{If global is True, returning the global average of SSIM, SIM, SIV, and SIP. If the option is FALSE, a a \code{sf} SpatialPolygonsDataFrame containing the SSIM, SIM, SIV, and SIP for each polygon is returned
+Default is TRUE}
 }
 \value{
 If global is TRUE, a string containing the global average SSIM, SIM, SIV, and SIP.
-If global is FALSE, a \code{sf} SpatialPolygonsDataFrame containing the SSIM, SIM, SIV, and SIP for each polygon.
+If global is FALSE, a \code{sf} polygon containing the SSIM, SIM, SIV, and SIP for each polygon.
 }
 \description{
 Calculate the structural similarity index measure for polygon maps.
@@ -46,4 +46,19 @@ The ssim_polygon function computes the SSIM for each polygon and can be returned
 }
 \details{
 This function computes the SSIM index for two polygon maps.
+}
+\examples{
+# Load example sf polygon Toronto Areas with attributes for maps:
+# Pampalon Index,CIMD Index,
+#and percentage of household commuting within the same Census Sub Division of residence
+shape<-SSIMmap::polygon
+
+# Mapping two attributes
+plot(shape$CIMD_SDD)
+plot(shape$PP_SDD)
+#Finding global ssim
+
+ssim_polygon(shape,"CIMD_SDD","PP_SDD")
+#Finding local ssim
+df<-ssim_polygon(shape,"CIMD_SDD","PP_SDD",global=FALSE)
 }
