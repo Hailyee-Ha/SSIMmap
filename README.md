@@ -4,11 +4,11 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of SSIMmap is to provide a comprehensive tools for working with Structural Similarity Index(SSIM) for map comparisons. The SSIMmap package includes four functions for calculating the similarities between maps: 1) ssim_bandwidth, ssim_constant, ssim_polygon,ssim_raster. Users who want to compare two maps and quantify the similarities can utilize this package and visualize the results using other tools(e.g., tmap and ggplot) as well.  
+The goal of SSIMmap is to offer a comprehensive set of tools for working with Structural Similarity Index (SSIM) for map comparisons. The SSIMmap package includes four key functions for calculating the similarities between maps: *(ssim_bandwidth)*, *(ssim_constant)*, *(ssim_polygon)*,*(ssim_raster)*. Users who want to compare two maps and quantify their similarities can utilize this package and visualize the results using other tools(e.g.,\code {tmap} and \code{ggplot}).  
 
 ## Installation
 
-You can install the development version of SSIMmap from [GitHub](https://github.com/Hailyee-Ha/SSIMmap.git) with:
+You can install the development version of SSIMmap from [GitHub](https://github.com/Hailyee-Ha/SSIMmap.git) with the following commands:
 
 ``` r
 install.packages("devtools")
@@ -23,17 +23,44 @@ library(SSIMmap)
 
 ## Functions
 SSIMmap includes the following key functions:
-1) ssim_bandwidth:
-2) ssim_constant:
-3) ssim_polygon:
-4) ssim_raster:
+1) *(ssim_bandwidth)*: This function calculates the bandwidth size for the computation of the SSIM on polygon maps. It offers two options for selecting the bandwidth size from two methods:1.square root of N and 2. the best trade-off between bias and variance. The function takes as input a shape file(\code {sf} polygon) including columns for the SSIM calculation and returns the two options for selecting bandwidth sizes on the basis of two methods. It also provides a plot illustrating the bias and variance against the size of bandwidth. 
+
+2) *(ssim_constant)*: This function calculates constants(k1 and k2) for the computation of the SSIM on polygon maps. It takes as input a shape file(\code {sf} polygon) including columns for the SSIM calculation and returns the constants on the console window.
+
+3) *(ssim_polygon)*: This function calculates the SSIM index for a given polygon. It takes as input a shape file(\code {sf} polygon) including columns for the SSIM calculation and returns either the global SSIM values  (global=TRUE) or the SSIM values for each given polygon as the local SSIM  (global=FALSE).
+
+4) *(ssim_raster)*: This function calculates the SSIM index for raster images. It takes as input a image file(\code {terra} raster) and returns either the global SSIM values (global=TRUE) or the SSIM values for each given cell as the local SSIM (global false)
 
 ## Example
-
-This is a basic example which shows you how to solve a common problem:
+Here is a basic example which shows you how to use the package:
 
 ``` r
 library(SSIMmap)
+
 ## basic example code
+##example polygon map of Toronto including columns(1. Pampalon Index("PP_SDD"), 2. CIMD Index("CIMD_SDD"), and 3. the percent of the housholds who commute within the same census subdivision("P_commute"))
+shape<-SSIMmap::polygon 
+
+##finding the options for selecting the bandwidth sizes from two methods
+ssim_bandwidth(shape, "PP_SDD","CIMD_SDD", max_bandwidth=500)
+
+##finding the constants(k1 and k2) for the SSIM calculation
+ssim_constant(shape,"PP_SDD","CIMD_SDD")
+
+##finding the global SSIM for the polygon map
+ssim_polygon(shape,"PP_SDD","CIMD_SDD")
+
+##finding the local SSIM for the polygon map and saving the results to result_polygon
+result_polygon<-ssim_polygon(shape,"PP_SDD","CIMD_SDD",global=FALSE)
+
+##example raster maps for singletons sperm whales and groups sperm whales
+img1<-SSIMmap::raster_data1
+img2<-SSIMmap::raster_data2
+
+##finding the global SSIM for the raster maps
+ssim_raster(img1,img2)
+
+##finding the local SSIM for the raster maps and saving the results to result_raster
+result_raster<-ssim_raster(img1,img2,global=FALSE)
 ```
 
