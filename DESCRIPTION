@@ -8,7 +8,7 @@ Description: This package is to calculate the the structural similarity index me
 Imports: 
       stats,
       dplyr, 
-      raster,
+      terra,
       sf, 
       tidyr,
       GWmodel,
