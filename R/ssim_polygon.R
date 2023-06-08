@@ -16,7 +16,7 @@
 #'
 #' @details This function computes the SSIM index for two polygon maps.
 #' @return If global is TRUE, a string containing the global average SSIM, SIM, SIV, and SIP.
-#' If global is FALSE, a \code{sf} SpatialPolygonsDataFrame containing the SSIM, SIM, SIV, and SIP for each polygon.
+#' If global is FALSE, a \code{sf} polygon containing the SSIM, SIM, SIV, and SIP for each polygon.
 #' @export ssim_polygon
 
 
@@ -29,6 +29,10 @@ ssim_polygon<-function(shape,map1,map2,global=TRUE,k1=NULL,k2=NULL,bandwidth=NUL
   if(bandwidth < 12){
     stop("The Bandwdith is too small to calculate the SSIM for the irregular lattice maps")
   }
+
+  num_rows <- nrow(shape)
+  sqrt_num_rows <- round(sqrt(num_rows),0)
+
 
   if(standardize){
     shape_df<-as.data.frame(shape)
@@ -45,6 +49,10 @@ ssim_polygon<-function(shape,map1,map2,global=TRUE,k1=NULL,k2=NULL,bandwidth=NUL
     shape_merged<-sf::as_Spatial(shape_merged)
     map1<-as.character(colnames(z_scores[1]))
     map2<-as.character(colnames(z_scores[2]))
+    if(is.null(bandwidth)){
+      result<-GWmodel::gwss(shape_merged,vars = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=sqrt_num_rows)
+
+    }
     result<-GWmodel::gwss(shape_merged,vars = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=bandwidth)
     gwss_result<-as.data.frame(result$SDF)
     mean<-dplyr::select(gwss_result,contains("LM"))
@@ -59,6 +67,10 @@ ssim_polygon<-function(shape,map1,map2,global=TRUE,k1=NULL,k2=NULL,bandwidth=NUL
 
   else{
     shape_sp<-sf::as_Spatial(shape)
+    if(is.null(bandwidth)){
+      result<-GWmodel::gwss(shape_merged,vars = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=sqrt_num_rows)
+
+    }
     result<-GWmodel::gwss(shape_sp,vars = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=bandwidth)
     gwss_result<-as.data.frame(result$SDF)
     mean<-dplyr::select(gwss_result,contains("LM"))

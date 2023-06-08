@@ -3,6 +3,7 @@
 export(bandwidth)
 export(constant)
 export(ssim_polygon)
+export(ssim_raster)
 importFrom(GWmodel,gwss)
 importFrom(dplyr,contains)
 importFrom(dplyr,select)

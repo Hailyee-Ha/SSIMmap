@@ -1,7 +1,7 @@
 #' Calcualte rescaled constants for SSIM Index
 #'
 #' This function calculates the rescaled constants (k1 and k2) for the SSIM index based on the global maximum value of the maps
-#' @param shape a SpatialPolygonsDataFrame containing the polygon data with attributes that can create polygon-based maps
+#' @param shape a a \code{sf} polygon  containing the polygon data with attributes that can create polygon-based maps
 #' @param map1 the name of the first map to compare
 #' @param map2 the name of the second map to compare
 #' @param standardize If TRUE, standardize the variables before computing the SSIM. Default is TRUE.
@@ -22,7 +22,7 @@
 
 # Functions ---------------------------------------------------------------
 
-constant<-function(shape,map1,map2,standardize=TRUE){
+ssim_constant<-function(shape,map1,map2,standardize=TRUE){
   if(map1==map2){
     stop("maps are identical")
   }
