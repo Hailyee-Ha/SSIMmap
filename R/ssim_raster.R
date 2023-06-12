@@ -22,7 +22,8 @@
 
 
 ssim_raster<- function(img1, img2, global=TRUE, w=3,k1=NULL,k2=NULL) {
-
+  img1.extent <- terra::ext(img1)
+  img1.na <- is.na(img1)
 
   #set constants
   l <- max(terra::global(img1, fun= max,na.rm=TRUE), terra::global(img2, fun= max, na.rm=TRUE))
@@ -69,15 +70,15 @@ ssim_raster<- function(img1, img2, global=TRUE, w=3,k1=NULL,k2=NULL) {
   SSIM2 <- L * C * S
 
   #Compute RasterBrick
-  ssim.brick <- terra::rast(SSIM2, L, C, S)
-  ssim.brick <- terra::crop(ssim.brick,img1.extent)
+  ssim.brick <- terra::c(SSIM2,L,C,S)
+  ssim.brick <- terra::crop(ssim.brick, img1.extent)
   ssim.brick[img1.na] <- NA
 
-  ssim.brick@data@names <- c('SSIM', 'SIM', 'SIV', 'SIP')
-  mean_SSIM <- terra::global(ssim.brick[['SSIM']], stat = 'mean', na.rm = TRUE)
-  mean_SIM <- terra::global(ssim.brick[['SIM']], stat = 'mean', na.rm = TRUE)
-  mean_SIV <- terra::global(ssim.brick[['SIV']], stat = 'mean', na.rm = TRUE)
-  mean_SIP <- terra::global(ssim.brick[['SIP']], stat = 'mean', na.rm = TRUE)
+  names(ssim.brick) <- c("SSIM", "SIM", "SIV", "SIP")
+  mean_SSIM <- terra::global(SSIM2, fun= 'mean', na.rm = TRUE)
+  mean_SIM <- terra::global(L, fun= 'mean', na.rm = TRUE)
+  mean_SIV <- terra::global(C, fun= 'mean', na.rm = TRUE)
+  mean_SIP <- terra::global(S, fun= 'mean', na.rm = TRUE)
 
   if(global){
     result <- paste("SSIM:", round(mean_SSIM, 5),
