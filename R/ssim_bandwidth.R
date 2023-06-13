@@ -19,6 +19,7 @@
 #' @importFrom sf as_Spatial
 #' @importFrom dplyr select contains
 #' @importFrom GWmodel gwss
+#' @importFrom scales rescale
 #'
 #' @examples
 #' # Load example sf polygon Toronto Areas with attributes for maps:
@@ -156,9 +157,9 @@ ssim_bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standarize
   bw_closest_to_zero_map2<-Tradeoff_map2$Bandwidth[index_map2]
 
   num_rows <- nrow(shape)
-  sqrt_num_rows <- round(sqrt(num_rows),1)
+  sqrt_num_rows <- round(sqrt(num_rows),0)
 
-  plot<-ggplot()+geom_line(data=df_bias_map1,aes(Bandwidth,R_Bias),color="dark blue")+geom_line(data=df_variance_map1,aes(Bandwidth,R_Variance),color="dark green")+geom_line(data=df_bias_map2,aes(Bandwidth,R_Bias),linetype="dashed",color="dark blue")+geom_line(data=df_variance_map2,aes(Bandwidth,R_Variance),linetype="dashed",color="dark green")
+  plot<-ggplot()+geom_line(data=df_bias_map1,aes(Bandwidth,R_Bias),color="dark blue")+geom_line(data=df_variance_map1,aes(Bandwidth,R_Variance),linetype="dashed",color="dark blue")+geom_line(data=df_bias_map2,aes(Bandwidth,R_Bias),color="dark green")+geom_line(data=df_variance_map2,aes(Bandwidth,R_Variance),linetype="dashed",color="dark green")
   plot<-plot+geom_rect(aes(xmin = min(bw_closest_to_zero_map1,bw_closest_to_zero_map2), xmax = max(bw_closest_to_zero_map1,bw_closest_to_zero_map2), ymin = 0, ymax = 1), fill = "grey", alpha = 0.5)
   plot<-plot+geom_vline(xintercept = sqrt_num_rows, color="black",linewidth=0.3, alpha = 0.5)+geom_vline(xintercept = bw_closest_to_zero_map1,color="red",linewidth=0.3, alpha = 0.5)+geom_vline(xintercept = bw_closest_to_zero_map2,color="red",linewidth=0.3, alpha = 0.5)+labs(x="Bandwidth",y="bias/variance")
   plot+geom_text(aes(x= bw_closest_to_zero_map1,y=0.5), label = as.character(bw_closest_to_zero_map1),vjust = -1)+geom_text(aes(x= bw_closest_to_zero_map2,y=0.5), label = as.character(bw_closest_to_zero_map2),vjust = -1)+geom_text(aes(x= sqrt_num_rows,y=0.3), label = as.character(sqrt_num_rows),vjust = -1)

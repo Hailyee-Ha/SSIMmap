@@ -7,6 +7,7 @@ Authors@R:
 Description: This package is to calculate the the structural similarity index measure (SSIM) for maps: polygon-based(irregular lattice) maps and raster-based(regular lattice) maps
 Imports: 
       stats,
+      scales,
       dplyr, 
       terra,
       sf, 
