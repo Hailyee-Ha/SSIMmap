@@ -136,7 +136,7 @@ ssim_bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standarize
   df_variance_map1$R_Variance<-rescale(df_variance_map1$Variance)
   df_variance_map2$R_Variance<-rescale(df_variance_map2$Variance)
 
-  P_Tradeoff_map1<-as.data.frame(df_bias_map1$R_Bias-df_variance_map1$R_Variance)
+  P_Tradeoff_map1<-as.data.frame(round(df_bias_map1$R_Bias-df_variance_map1$R_Variance),0)
   Tradeoff_map1<-as.data.frame(cbind(bw_order,P_Tradeoff_map1))
   colnames(Tradeoff_map1)<-c("Bandwidth","Tradeoff")
   index_map1<-which.min(abs(Tradeoff_map1$Tradeoff))
