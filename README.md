@@ -55,8 +55,11 @@ ssim_polygon(shape,"PP_SDD","CIMD_SDD")
 result_polygon<-ssim_polygon(shape,"PP_SDD","CIMD_SDD",global=FALSE)
 
 ##example raster maps for singletons sperm whales and groups sperm whales
-img1<-SSIMmap::single2nm
-img2<-SSIMmap::groups2nm
+image_path1 <- system.file("data", "groups2nm.tif", package = "SSIMmap")
+image_path2 <- system.file("data", "single2nm.tif", package = "SSIMmap")
+
+img1<-rast(image_path1)
+img2<-rast(image_path2)
 
 ##finding the global SSIM for the raster maps
 ssim_raster(img1,img2)

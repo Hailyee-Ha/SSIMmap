@@ -58,20 +58,12 @@ ssim_bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standarize
     min<-min(min(shape_df$z_score_map1),min(shape_df$z_score_map2))
     shape_df$z_score_map1<-shape_df$z_score_map1-min
     shape_df$z_score_map2<-shape_df$z_score_map2-min
-    mean_shape_map1<-mean(shape_df$z_score_map1)
-    mean_shape_map2<-mean(shape_df$z_score_map2)
-    map_shape_map1<-sd(shape_df$z_score_map1)
-    map_shape_map2<-sd(shape_df$z_score_map2)
-    cov_shape<-cov(shape_df$z_score_map1,shape_df$z_score_map2)
     z_scores<-as.data.frame(cbind(shape_df$z_score_map1,shape_df$z_score_map2))
     colnames(z_scores)<- paste0("zscore",colnames(z_scores))
     names(z_scores)<- sub("V1",map1,names(z_scores))
     names(z_scores)<- sub("V2",map2,names(z_scores))
     map1<-as.character(colnames(z_scores[1]))
     map2<-as.character(colnames(z_scores[2]))
-    globalMin <- min(min(z_scores[,1]),min(z_scores[,2]))
-    l<-max(max(z_scores[,1]),max(z_scores[,2]))
-    max<-max(max(z_scores[,1]),max(z_scores[,2]))
     shape_merged<-cbind(shape,z_scores)
 
 
@@ -157,12 +149,12 @@ ssim_bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standarize
   bw_closest_to_zero_map2<-Tradeoff_map2$Bandwidth[index_map2]
 
   num_rows <- nrow(shape)
-  sqrt_num_rows <- round(sqrt(num_rows),0)
+  sqrt_num_rows <- ceiling(sqrt(num_rows))
 
   plot<-ggplot()+geom_line(data=df_bias_map1,aes(Bandwidth,R_Bias),color="dark blue")+geom_line(data=df_variance_map1,aes(Bandwidth,R_Variance),linetype="dashed",color="dark blue")+geom_line(data=df_bias_map2,aes(Bandwidth,R_Bias),color="dark green")+geom_line(data=df_variance_map2,aes(Bandwidth,R_Variance),linetype="dashed",color="dark green")
   plot<-plot+geom_rect(aes(xmin = min(bw_closest_to_zero_map1,bw_closest_to_zero_map2), xmax = max(bw_closest_to_zero_map1,bw_closest_to_zero_map2), ymin = 0, ymax = 1), fill = "grey", alpha = 0.5)
   plot<-plot+geom_vline(xintercept = sqrt_num_rows, color="black",linewidth=0.3, alpha = 0.5)+geom_vline(xintercept = bw_closest_to_zero_map1,color="red",linewidth=0.3, alpha = 0.5)+geom_vline(xintercept = bw_closest_to_zero_map2,color="red",linewidth=0.3, alpha = 0.5)+labs(x="Bandwidth",y="bias/variance")
-  plot+geom_text(aes(x= bw_closest_to_zero_map1,y=0.5), label = as.character(bw_closest_to_zero_map1),vjust = -1)+geom_text(aes(x= bw_closest_to_zero_map2,y=0.5), label = as.character(bw_closest_to_zero_map2),vjust = -1)+geom_text(aes(x= sqrt_num_rows,y=0.3), label = as.character(sqrt_num_rows),vjust = -1)
+  plot<-plot+geom_text(aes(x= sqrt_num_rows,y=0.3), label = as.character(sqrt_num_rows),vjust = -1)
 
   if(option=="midpoint"){
     result<- paste("Square root N:", sqrt_num_rows,"Bias-Variance Trade-off:",mean(c(bw_closest_to_zero_map1,bw_closest_to_zero_map2)),sep = " ")
