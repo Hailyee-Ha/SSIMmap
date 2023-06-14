@@ -70,7 +70,7 @@ ssim_raster<- function(img1, img2, global=TRUE, w=3,k1=NULL,k2=NULL) {
   SSIM2 <- L * C * S
 
   #Compute RasterBrick
-  ssim.brick <- terra::c(SSIM2,L,C,S)
+  ssim.brick <- c(SSIM2,L,C,S)
   ssim.brick <- terra::crop(ssim.brick, img1.extent)
   ssim.brick[img1.na] <- NA
 
