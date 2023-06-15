@@ -156,7 +156,7 @@ ssim_bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standarize
   plot<-ggplot2::ggplot()+ggplot2::geom_line(data=df_bias_map1,ggplot2::aes(Bandwidth,R_Bias),color="dark blue")+ggplot2::geom_line(data=df_variance_map1,ggplot2::aes(Bandwidth,R_Variance),linetype="dashed",color="dark blue")+ggplot2::geom_line(data=df_bias_map2,ggplot2::aes(Bandwidth,R_Bias),color="dark green")+ggplot2::geom_line(data=df_variance_map2,ggplot2::aes(Bandwidth,R_Variance),linetype="dashed",color="dark green")
   plot<-plot+ggplot2::geom_rect(ggplot2::aes(xmin = min(bw_closest_to_zero_map1,bw_closest_to_zero_map2), xmax = max(bw_closest_to_zero_map1,bw_closest_to_zero_map2), ymin = 0, ymax = 1), fill = "grey", alpha = 0.5)
   plot<-plot+ggplot2::geom_vline(xintercept = sqrt_num_rows, color="black",linewidth=0.3, alpha = 0.5)+geom_vline(xintercept = bw_closest_to_zero_map1,color="red",linewidth=0.3, alpha = 0.5)+geom_vline(xintercept = bw_closest_to_zero_map2,color="red",linewidth=0.3, alpha = 0.5)+labs(x="Bandwidth",y="bias/variance")
-  plot<-plot+ggplot2::geom_text(ggplot2::aes(x= sqrt_num_rows,y=0.3), label = as.character(sqrt_num_rows),vjust = -1)
+  plot<-plot+ggplot2::geom_text(ggplot2::aes(x= bw_closest_to_zero_map1,y=0.3), label = as.character(bw_closest_to_zero_map1),size=2,vjust = -1)+ggplot2::geom_text(ggplot2::aes(x= bw_closest_to_zero_map2,y=0.3), label = as.character(bw_closest_to_zero_map2),size=2,vjust = -1)+ggplot2::geom_text(ggplot2::aes(x= sqrt_num_rows,y=0.3), label = as.character(sqrt_num_rows),vjust = -1)
 
   if(option=="midpoint"){
     result<- paste("Square root N:", sqrt_num_rows,"Bias-Variance Trade-off:",mean(c(bw_closest_to_zero_map1,bw_closest_to_zero_map2)),sep = " ")
