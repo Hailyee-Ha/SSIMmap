@@ -136,17 +136,19 @@ ssim_bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standarize
   df_variance_map1$R_Variance<-rescale(df_variance_map1$Variance)
   df_variance_map2$R_Variance<-rescale(df_variance_map2$Variance)
 
-  P_Tradeoff_map1<-as.data.frame(round(df_bias_map1$R_Bias-df_variance_map1$R_Variance),0)
+  P_Tradeoff_map1<-as.data.frame(df_bias_map1$R_Bias-df_variance_map1$R_Variance)
   Tradeoff_map1<-as.data.frame(cbind(bw_order,P_Tradeoff_map1))
   colnames(Tradeoff_map1)<-c("Bandwidth","Tradeoff")
   index_map1<-which.min(abs(Tradeoff_map1$Tradeoff))
   bw_closest_to_zero_map1<-Tradeoff_map1$Bandwidth[index_map1]
+  bw_closest_to_zero_map1<-round(bw_closest_to_zero_map1,0)
 
   P_Tradeoff_map2<-as.data.frame(df_bias_map2$R_Bias-df_variance_map2$R_Variance)
   Tradeoff_map2<-as.data.frame(cbind(bw_order,P_Tradeoff_map2))
   colnames(Tradeoff_map2)<-c("Bandwidth","Tradeoff")
   index_map2<-which.min(abs(Tradeoff_map2$Tradeoff))
   bw_closest_to_zero_map2<-Tradeoff_map2$Bandwidth[index_map2]
+  bw_closest_to_zero_map2<-round(bw_closest_to_zero_map2,0)
 
   num_rows <- nrow(shape)
   sqrt_num_rows <- ceiling(sqrt(num_rows))
