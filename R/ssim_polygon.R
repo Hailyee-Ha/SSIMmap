@@ -54,9 +54,8 @@ ssim_polygon<-function(shape,map1,map2,standardize=TRUE,bandwidth=NULL,k1=NULL,k
     shape_df<-as.data.frame(shape)
     shape_df$z_score_map1<-(shape_df[,map1]-mean(shape_df[,map1]))/sd(shape_df[,map1])
     shape_df$z_score_map2<-(shape_df[,map2]-mean(shape_df[,map2]))/sd(shape_df[,map2])
-    min<-min(min(shape_df$z_score_map1),min(shape_df$z_score_map2))
-    shape_df$z_score_map1<-shape_df$z_score_map1-min
-    shape_df$z_score_map2<-shape_df$z_score_map2-min
+    shape_df$z_score_map1<-shape_df$z_score_map1-min(shape_df$z_score_map1)
+    shape_df$z_score_map2<-shape_df$z_score_map2-min(shape_df$z_score_map2)
     z_scores<-as.data.frame(cbind(shape_df$z_score_map1,shape_df$z_score_map2))
     colnames(z_scores)<- paste0("zscore",colnames(z_scores))
     names(z_scores)<- sub("V1",map1,names(z_scores))
