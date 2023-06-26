@@ -115,7 +115,7 @@ ssim_bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standarize
   colnames(map1_LM)<-col_names
   colnames(map2_LM)<-col_names
   df_bias_map1<-apply(map1_LM,2,function(x)(x-map1_o)^2)
-  df_bias_map1<-as.data.frame(apply(df_bias_map1,2, mean))
+  df_bias_map1<-as.data.frame(apply(df_bias_map1,2,mean))
   df_bias_map2<-apply(map2_LM,2,function(x)(x-map2_o)^2)
   df_bias_map2<-as.data.frame(apply(df_bias_map2,2, mean))
   df_variance_map1<-as.data.frame(apply(map1_LM,2,var))
