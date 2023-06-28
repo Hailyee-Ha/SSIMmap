@@ -21,6 +21,8 @@
 #' @importFrom sf as_Spatial
 #' @importFrom dplyr select contains
 #' @importFrom GWmodel gwss
+#' @importFrom knitr kable
+
 #' @examples
 #' # Load example sf polygon Toronto Areas with attributes for maps:
 #' # Pampalon Index,CIMD Index,
@@ -165,19 +167,36 @@ ssim_polygon<-function(shape,map1,map2,standardize=TRUE,bandwidth=NULL,k1=NULL,k
   colnames(df)<-c("SSIM","SIM","SIV","SIP")
 
   if(global){
-    SSIM<-mean(df$SSIM)
-    SIM<-mean(df$SIM)
-    SIV<-mean(df$SIV)
-    SIP<-mean(df$SIP)
-    result <- paste("SSIM:", round(SSIM, 5),
-                    "SIM:", round(SIM, 5),
-                    "SIV:", round(SIV, 5),
-                    "SIP:", round(SIP, 5),
-                    sep = " ")
+    SSIM_mean <- mean(df$SSIM)
+    SIM_mean <- mean(df$SIM)
+    SIV_mean <- mean(df$SIV)
+    SIP_mean <- mean(df$SIP)
 
+    SSIM_min <- min(df$SSIM)
+    SIM_min <- min(df$SIM)
+    SIV_min <- min(df$SIV)
+    SIP_min <- min(df$SIP)
 
-    cat(result, "\n")}
+    SSIM_max <- max(df$SSIM)
+    SIM_max <- max(df$SIM)
+    SIV_max <- max(df$SIV)
+    SIP_max <- max(df$SIP)
 
+    SSIM_sd <- sd(df$SSIM)
+    SIM_sd <- sd(df$SIM)
+    SIV_sd <- sd(df$SIV)
+    SIP_sd <- sd(df$SIP)
+
+    result <- data.frame(
+      Statistic = c("Mean", "Min", "Max", "SD"),
+      SSIM = c(SSIM_mean, SSIM_min, SSIM_max, SSIM_sd),
+      SIM = c(SIM_mean, SIM_min, SIM_max, SIM_sd),
+      SIV = c(SIV_mean, SIV_min, SIV_max, SIV_sd),
+      SIP = c(SIP_mean, SIP_min, SIP_max, SIP_sd)
+    )
+
+    print(knitr::kable(result, row.names = FALSE))
+  }
   else{
     SSIM_results<-cbind(shape,df)
     return(SSIM_results)
