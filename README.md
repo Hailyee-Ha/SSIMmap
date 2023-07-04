@@ -1,21 +1,9 @@
----
-title: "Introduction to SSIMmap"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Introduction to SSIMmap}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
+# Introduction to SSIMmap
 
-The goal of the *SSIMmap* package  extend the classical SSIM method[paper](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=1284395) for irregular lattice-based maps and raster images.The original SSIM develop to compare two image mimicking the human visual system and *SSIMmap* package applied this method to two types of maps (polygon and raster). A more generalizable SSIM method incorporates well-developed geographically weighted summary statistics[paper](https://www.sciencedirect.com/science/article/pii/S0198971501000096?via%3Dihub) with an adaptive bandwidth kernel function for irregular lattice-based maps. This package includes four key functions: **ssim_bandwidth**, **ssim_constant**, **ssim_polygon**,**ssim_raster**. Users who want to compare two maps and quantify their similarities can utilize this package and visualize the results using other R packages(e.g.,[*tmap*](https://cran.r-project.org/web/packages/tmap/index.html) and [*ggplot*](https://cran.r-project.org/web/packages/ggplot2/index.html)).
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
-```
+The goal of the *SSIMmap* package  extend [the classical SSIM method](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=1284395) for irregular lattice-based maps and raster images.The original SSIM develop to compare two image mimicking the human visual system and *SSIMmap* package applied this method to two types of maps (polygon and raster). A more generalizable SSIM method incorporates well-developed geographically weighted summary statistics [geographically weighted summary statistics](https://www.sciencedirect.com/science/article/pii/S0198971501000096?via%3Dihub) with an adaptive bandwidth kernel function for irregular lattice-based maps. This package includes four key functions: **ssim_bandwidth**, **ssim_constant**, **ssim_polygon**,**ssim_raster**. Users who want to compare two maps and quantify their similarities can utilize this package and visualize the results using other R packages(e.g.,[*tmap*](https://cran.r-project.org/web/packages/tmap/index.html) and [*ggplot*](https://cran.r-project.org/web/packages/ggplot2/index.html)).
+
+
 
 ## Installation: SSIMmap
 
@@ -28,7 +16,7 @@ library(SSIMmap)
 
 ## Data: polygon, groups2nm.tif, and single2nm.tif
 
-The package has three example data: 1) polygon, 2) groups2nm, and 3) single2nm. First, **polygon** is an example data for *ssim_polygon*,*ssim_bandwidth*,and *ssim_constant*, which stands for Toronto, ON. This dataset contains neighborhood deprivation indices(the Canadian Index of Multiple Deprivation and Pampalon index) and the census variable(the percentage of households who commute within the census subdivision of residence) for 2016. Second and third data are image files for *ssim_raster* function. The image files are the location information of sperm whale as the presence of group or singletons.
+The package has three example data: 1) polygon, 2) groups2nm, and 3) single2nm. First, **polygon** is an example data for **ssim_polygon**,**ssim_bandwidth**,and **ssim_constant**, which stands for Toronto, ON. This dataset contains neighborhood deprivation indices(the Canadian Index of Multiple Deprivation and Pampalon index) and the census variable(the percentage of households who commute within the census subdivision of residence) for 2016. Second and third data are image files for **ssim_raster** function. The image files are the location information of sperm whale as the presence of group or singletons.
 
 ```{r}
 library(SSIMmap)
@@ -56,10 +44,6 @@ For the second method, the function defaults to the mid-point of the optimal tra
 
 The function takes as input a shape file in the *sf* class, which includes columns necessary for SSIM calculation. It outputs two possible selections for the bandwidth size based on the selected method. Additionally, the function generates a plot illustrating the relationship between bias, variance, and bandwidth size with a vertical line of the square root of N result.
 
-```{r}
-args(ssim_bandwidth)
-```
-
 ### How to execute
 
 ```{r}
@@ -72,9 +56,6 @@ ssim_bandwidth(shape,"CIMD_SDD","P_commute",max_bandwidth=80)
 
 This function calculates constants(k1 and k2) for the computation of the SSIM on polygon maps based on the maximum value. It takes as input a shape file in *sf* class including columns for the SSIM calculation and returns the rescaled constants on the console window.
 
-```{r}
-args(ssim_constant)
-```
 
 ### How to execute
 
@@ -84,11 +65,8 @@ ssim_constant(shape,"CIMD_SDD","PP_SDD")
 
 ## Functions: ssim_polygon
 
-This function calculates the SSIM index for a given polygon. It takes a shape file in the *sf* class as input, which includes the necessary columns for SSIM calculation. The function then returns either the global SSIM values (when global = TRUE) or the local SSIM values for each given polygon (when global = FALSE). By default, the bandwidth size is determined by the square root of N. However, users have the flexibility to select their own bandwidth size or use the result from the *ssim_bandwidth* function. 
+This function calculates the SSIM index for a given polygon. It takes a shape file in the *sf* class as input, which includes the necessary columns for SSIM calculation. The function then returns either the global SSIM values (when global = TRUE) or the local SSIM values for each given polygon (when global = FALSE). By default, the bandwidth size is determined by the square root of N. However, users have the flexibility to select their own bandwidth size or use the result from the **ssim_bandwidth** function. 
 
-```{r}
-args(ssim_polygon)
-```
 
 ### How to execute
 
@@ -106,9 +84,6 @@ head(df_2)
 
 This function calculates the SSIM index for raster images. It takes as input a image file importing from the [*terra*](https://cran.r-project.org/web/packages/terra/index.html) and returns either the global SSIM values (global=TRUE) or the SSIM values for each given cell as the local SSIM (global=FALSE).Default of the window size is 3\*3 and a user can use own window size.
 
-```{r}
-args(ssim_raster)
-```
 
 ### How to execute
 
