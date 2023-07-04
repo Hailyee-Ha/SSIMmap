@@ -32,13 +32,12 @@
 #' plot(shape$PP_SDD)
 #'
 #' #Execution of bandwidth with maps above
-#' \donttest{ ssim_bandwidth(shape,CIMD_SDD,PP_SDD,max_bandwidth=500) }
+#' \donttest{ ssim_bandwidth(shape,CIMD_SDD,PP_SDD,max_bandwidth=100) }
 #'
 #' @export ssim_bandwidth
 
 
 # Functions ---------------------------------------------------------------
-
 ssim_bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standarize=TRUE,option="midpoint"){
 
   if(map1==map2){

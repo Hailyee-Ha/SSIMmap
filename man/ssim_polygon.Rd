@@ -2,9 +2,7 @@
 % Please edit documentation in R/ssim_polygon.R
 \name{ssim_polygon}
 \alias{ssim_polygon}
-\title{Calculate the structural similarity index measure for polygon maps.
-This function computes the SSIM, a measure of similarity between two polygon maps.
-The ssim_polygon function computes the SSIM for each polygon and can be returned as a global average or for each polygon as a \code{sf} object}
+\title{Calculate the structural similarity index measure for polygon maps.}
 \usage{
 ssim_polygon(
   shape,
@@ -40,7 +38,6 @@ If global is TRUE, a string containing the global average SSIM, SIM, SIV, and SI
 If global is FALSE, a \code{sf} polygon containing the SSIM, SIM, SIV, and SIP for each polygon.
 }
 \description{
-Calculate the structural similarity index measure for polygon maps.
 This function computes the SSIM, a measure of similarity between two polygon maps.
 The ssim_polygon function computes the SSIM for each polygon and can be returned as a global average or for each polygon as a \code{sf} object
 }

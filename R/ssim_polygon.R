@@ -1,5 +1,5 @@
 #' Calculate the structural similarity index measure for polygon maps.
-
+#'
 #' This function computes the SSIM, a measure of similarity between two polygon maps.
 #' The ssim_polygon function computes the SSIM for each polygon and can be returned as a global average or for each polygon as a \code{sf} object
 #'

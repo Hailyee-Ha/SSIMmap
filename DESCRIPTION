@@ -2,7 +2,7 @@ Package: SSIMmap
 Title: The R package: the structural similarity index measure (SSIM) for maps
 Version: 1.0.0
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
+    person("Hui Jeong (Hailyee)", "Last", , "first.last@example.com", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: This package is to calculate the the structural similarity index measure (SSIM) for maps: polygon-based(irregular lattice) maps and raster-based(regular lattice) maps
 Imports: 
