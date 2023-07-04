@@ -14,10 +14,6 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-```
-```{r setup, echo = FALSE}
-devtools::install_github("Hailyee-Ha/SSIMmap")
-library(SSIMmap)
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
@@ -25,12 +21,17 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 You can install the development version of SSIMmap from [GitHub](https://github.com/Hailyee-Ha/SSIMmap.git) with the following commands:
 
+```{r , eval = FALSE}
+devtools::install_github("Hailyee-Ha/SSIMmap")
+library(SSIMmap)
+```
 
 ## Data: polygon, groups2nm.tif, and single2nm.tif
 
 The package has three example data: 1) polygon, 2) groups2nm, and 3) single2nm. First, **polygon** is an example data for *ssim_polygon*,*ssim_bandwidth*,and *ssim_constant*, which stands for Toronto, ON. This dataset contains neighborhood deprivation indices(the Canadian Index of Multiple Derpivation and Pampalon index) and the census variable(the percentage of households who commute within the census subdivision of residence) for 2016. Second and third data are image files for *ssim_raster* function. The image files are the location information of sperm whale as the presence of group or singletons.
 
 ```{r}
+library(SSIMmap)
 library(sf)
 library(terra)
 shape<- SSIMmap::polygon
@@ -54,8 +55,8 @@ args(ssim_bandwidth)
 
 ### How to execute
 
-```{r, warnings = FALSE}
-ssim_bandwidth(shape,CIMD_SDD,PP_SDD,max_bandwidth=100)
+```{r,  eval = FALSE}
+ssim_bandwidth(shape,"CIMD_SDD","PP_SDD",max_bandwidth=100)
 ```
 
 ## Functions: ssim_constant
@@ -69,7 +70,7 @@ args(ssim_constant)
 ### How to execute
 
 ```{r}
-ssim_constant(shape,CIMD_SDD,PP_SDD)
+ssim_constant(shape,"CIMD_SDD","PP_SDD")
 ```
 
 ## Functions: ssim_polygon
@@ -83,8 +84,8 @@ args(ssim_polygon)
 ### How to execute
 
 ```{r}
-ssim_polygon(shape,CIMD_SDD,PP_SDD) 
-df<-ssim_polygon(shape,CIMD_SDD,PP_SDD,global = FALSE) 
+ssim_polygon(shape,"CIMD_SDD","PP_SDD") 
+df<-ssim_polygon(shape,"CIMD_SDD","PP_SDD",global = FALSE) 
 head(df)
 ```
 
@@ -99,8 +100,8 @@ args(ssim_raster)
 ### How to execute
 
 ```{r}
-result_raster<-ssim_raster(img1,img2,global=FALSE)
-result_raster
+ssim_raster(img1,img2)
+result_raster<-ssim_raster(img1,img2,global = FALSE)
 plot(result_raster)
 ```
 
