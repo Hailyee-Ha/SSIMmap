@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The goal of the *SSIMmap* package is to offer a comprehensive set of tools for workding with Structural Similarity Index (SSIM) for map comparisons.The original SSIM develop to compare two image mimicking the human visual system, which is presented in the [paper](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=1284395). *SSIMmap* package applied this method to maps (polygon and raster). The package includes four key functions for calculating the similarities between maps: **ssim_bandwidth**, **ssim_constant**, **ssim_polygon**,**ssim_raster**. Users who want to compare two maps and quantify their similarities can utilize this package and visualize the results using other tools(e.g.,[*tmap*](https://cran.r-project.org/web/packages/tmap/index.html) and [*ggplot*](https://cran.r-project.org/web/packages/ggplot2/index.html)).
+The goal of the *SSIMmap* package  extend the classical SSIM method[paper](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=1284395) for irregular lattice-based maps and raster images.The original SSIM develop to compare two image mimicking the human visual system and *SSIMmap* package applied this method to two types of maps (polygon and raster). A more generalizable SSIM method incorporates well-developed geographically weighted summary statistics[paper](https://www.sciencedirect.com/science/article/pii/S0198971501000096?via%3Dihub) with an adaptive bandwidth kernel function for irregular lattice-based maps. This package includes four key functions: **ssim_bandwidth**, **ssim_constant**, **ssim_polygon**,**ssim_raster**. Users who want to compare two maps and quantify their similarities can utilize this package and visualize the results using other R packages(e.g.,[*tmap*](https://cran.r-project.org/web/packages/tmap/index.html) and [*ggplot*](https://cran.r-project.org/web/packages/ggplot2/index.html)).
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -19,7 +19,7 @@ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ## Installation: SSIMmap
 
-You can install the development version of SSIMmap from [GitHub](https://github.com/Hailyee-Ha/SSIMmap.git) with the following commands:
+You can install the development version of *SSIMmap* from [GitHub](https://github.com/Hailyee-Ha/SSIMmap.git) with the following commands:
 
 ```{r , eval = FALSE}
 devtools::install_github("Hailyee-Ha/SSIMmap")
@@ -28,7 +28,7 @@ library(SSIMmap)
 
 ## Data: polygon, groups2nm.tif, and single2nm.tif
 
-The package has three example data: 1) polygon, 2) groups2nm, and 3) single2nm. First, **polygon** is an example data for *ssim_polygon*,*ssim_bandwidth*,and *ssim_constant*, which stands for Toronto, ON. This dataset contains neighborhood deprivation indices(the Canadian Index of Multiple Derpivation and Pampalon index) and the census variable(the percentage of households who commute within the census subdivision of residence) for 2016. Second and third data are image files for *ssim_raster* function. The image files are the location information of sperm whale as the presence of group or singletons.
+The package has three example data: 1) polygon, 2) groups2nm, and 3) single2nm. First, **polygon** is an example data for *ssim_polygon*,*ssim_bandwidth*,and *ssim_constant*, which stands for Toronto, ON. This dataset contains neighborhood deprivation indices(the Canadian Index of Multiple Deprivation and Pampalon index) and the census variable(the percentage of households who commute within the census subdivision of residence) for 2016. Second and third data are image files for *ssim_raster* function. The image files are the location information of sperm whale as the presence of group or singletons.
 
 ```{r}
 library(SSIMmap)
@@ -47,7 +47,14 @@ plot(img2)
 
 ## Functions: ssim_bandwidth
 
-This function calculates the bandwidth size for the computation of the SSIM on polygon maps. It offers two options for selecting the bandwidth size from two methods: 1) square root of N and 2) the best trade-off between bias and variance of the two maps. In terms of the best trade-off between bias and variance, the default returns a mid point of the best trade-off between bias and variance of the map1 and map2. A user can select the upper(the larger one) and the lower(the smaller) between the two. The function takes as input a shape file in *sf* class including columns for the SSIM calculation and returns the two options for selecting bandwidth sizes on the basis of two methods. It also provides a plot illustrating the bias and variance against the size of bandwidth.
+The function ssim_bandwidth calculates the bandwidth size for the computation of the Structural Similarity Index (SSIM) on polygon maps. A user can determine whether the maps are standardized or not. The function provides two options for bandwidth size selection on the console window:
+
+1) The square root of N.
+2) The best trade-off between the bias and variance of the two maps.
+
+For the second method, the function defaults to the mid-point of the optimal trade-off between the bias and variance of map1 and map2. However, users can choose the upper (the larger one) or the lower (the smaller one) value between the two of the optimal trade-off between the bias and variance
+
+The function takes as input a shape file in the *sf* class, which includes columns necessary for SSIM calculation. It outputs two possible selections for the bandwidth size based on the selected method. Additionally, the function generates a plot illustrating the relationship between bias, variance, and bandwidth size with a vertical line of the square root of N result.
 
 ```{r}
 args(ssim_bandwidth)
@@ -55,13 +62,15 @@ args(ssim_bandwidth)
 
 ### How to execute
 
-```{r,  eval = FALSE}
-ssim_bandwidth(shape,"CIMD_SDD","PP_SDD",max_bandwidth=100)
+```{r}
+ssim_bandwidth(shape,"CIMD_SDD","PP_SDD",max_bandwidth=80)
+ssim_bandwidth(shape,"CIMD_SDD","P_commute",max_bandwidth=80)
+
 ```
 
 ## Functions: ssim_constant
 
-This function calculates constants(k1 and k2) for the computation of the SSIM on polygon maps based on the maximum value. It takes as input a shape filein *sf* class including columns for the SSIM calculation and returns the constants on the console window.
+This function calculates constants(k1 and k2) for the computation of the SSIM on polygon maps based on the maximum value. It takes as input a shape file in *sf* class including columns for the SSIM calculation and returns the rescaled constants on the console window.
 
 ```{r}
 args(ssim_constant)
@@ -75,7 +84,7 @@ ssim_constant(shape,"CIMD_SDD","PP_SDD")
 
 ## Functions: ssim_polygon
 
-This function calculates the SSIM index for a given polygon. It takes as input a shape file in *sf* class including columns for the SSIM calculation and returns either the global SSIM values (global=TRUE) or the SSIM values for each given polygon as the local SSIM (global=FALSE). Default of the bandwidth size is determined by the square root of N.
+This function calculates the SSIM index for a given polygon. It takes a shape file in the *sf* class as input, which includes the necessary columns for SSIM calculation. The function then returns either the global SSIM values (when global = TRUE) or the local SSIM values for each given polygon (when global = FALSE). By default, the bandwidth size is determined by the square root of N. However, users have the flexibility to select their own bandwidth size or use the result from the *ssim_bandwidth* function. 
 
 ```{r}
 args(ssim_polygon)
@@ -85,8 +94,12 @@ args(ssim_polygon)
 
 ```{r}
 ssim_polygon(shape,"CIMD_SDD","PP_SDD") 
+ssim_polygon(shape,"CIMD_SDD","P_commute") 
 df<-ssim_polygon(shape,"CIMD_SDD","PP_SDD",global = FALSE) 
+df_2<-ssim_polygon(shape,"CIMD_SDD","P_commute",global = FALSE) 
+
 head(df)
+head(df_2)
 ```
 
 ## Functions: ssim_raster
@@ -129,10 +142,24 @@ Toronto <- get_tiles(shape_NDI_valid, provider = "OpenStreetMap", zoom = 15)
     colorRampPalette(colors, alpha = alpha)(n)
  }
  
-#Visualize the SSIM result on the map
+#Visualize the SSIM result (the CIMD vs. Pampalon) on the map
 ggplot() +
   geom_spatraster_rgb(data = Toronto) +
   geom_sf(data = df, aes(fill = SSIM), color = NA) +
+  scale_fill_gradientn(colors = palfunc(8), limits = c(-1, 1)) +
+  theme_void() +
+  theme(
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank()
+  )+ ggspatial::annotation_scale()
+
+#Visualize the SSIM result (the CIMD vs. commuting pattern) on the map
+ggplot() +
+  geom_spatraster_rgb(data = Toronto) +
+  geom_sf(data = df_2, aes(fill = SSIM), color = NA) +
   scale_fill_gradientn(colors = palfunc(8), limits = c(-1, 1)) +
   theme_void() +
   theme(
@@ -147,7 +174,7 @@ ggplot() +
 
 ### Reference
 
--   Brunsdon, C., Fotheringham, A.S. and Charlton, M. (2002). Geographically weighted summary statistics---a framework for localised exploratory data analysis. *Computers, Environment and Urban Systems*, 26(6), pp.501-524. [https://doi.org/10.1016/S0198-9715(01)00009-6](https://doi.org/10.1016/S0198-9715(01)00009-6){.uri}
+-   Brunsdon, C., Fotheringham, A.S. and Charlton, M. (2002). Geographically weighted summary statistics---a framework for localised exploratory data analysis. *Computers, Environment and Urban Systems*, 26(6), pp.501-524. <https://doi.org/10.1016/S0198-9715(01)00009-6>
 -   Jones, E.L., Rendell, L., Pirotta, E. and Long, J.A. (2016). Novel application of a quantitative spatial comparison tool to species distribution data. *Ecological Indicators*, 70, pp.67-76. <https://doi.org/10.1016/j.ecolind.2016.05.051>
 -   Lu, B., Harris, P., Charlton, M. and Brunsdon, C. (2014). The GWmodel R package: further topics for exploring spatial heterogeneity using geographically weighted models. *Geo-spatial Information Science*, 17(2), pp.85-101. <https://doi.org/10.1080/10095020.2014.917453>
 -   Wang, Z., Bovik, A.C., Sheikh, H.R. and Simoncelli, E.P. (2004). Image quality assessment: from error visibility to structural similarity. *IEEE transactions on image processing*, 13(4), pp.600-612. <https://doi.org/10.1109/TIP.2003.819861>
