@@ -1,6 +1,6 @@
-#' Calcualte rescaled constants for SSIM Index
+#' Calculate constants for SSIM Index
 #'
-#' This function calculates the rescaled constants (k1 and k2) for the SSIM index based on the global maximum value of the maps
+#' This function rescales the constants (k1 and k2) for the SSIM index based on the global maximum value of the maps
 #' @param shape a a \code{sf} polygon  containing the polygon data with attributes that can create polygon-based maps
 #' @param map1 the name of the first map to compare
 #' @param map2 the name of the second map to compare
