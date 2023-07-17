@@ -16,8 +16,6 @@ library(SSIMmap)
 
 ## Data: polygon, groups2nm.tif, and single2nm.tif
 
-## Data: polygon, groups2nm.tif, and single2nm.tif
-
 The package has three example data: 1) Toronto, 2) groups2nm (*terra raster object*), and 3) single2nm (*terra raster object*). First, **Toronto** is an example data for *ssim_polygon*,*ssim_bandwidth*,and *ssim_constant*, which stands for Toronto, ON. This dataset contains neighborhood deprivation indices(the Canadian Index of Multiple Deprivation and Pampalon index) and the census variable(the percentage of households who commute within the census subdivision of residence) for 2016. The second and third data inputs for *ssim_raster* function are *terra raster objects*. These raster objects represent the geographical location from 38 to 41◦N and 0.5–5◦E, centering on the islands of Ibiza, Mallorca and Menorca. The raster objects, labeled as 'groups2nm' and 'single2nm',  contain information on sperm whales. They represent the predicted probability of presence for groups and singletons at a spatial resolution of 2 nautical miles(NM) on a regular grid. For further information about 'groups2nm' and 'single2nm' please refer to the paper ["Novel application of a quantitative spatial comparison tool to species distribution data"](https://www.sciencedirect.com/science/article/pii/S1470160X16302990))
 
 ```{r}
