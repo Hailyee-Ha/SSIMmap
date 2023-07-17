@@ -30,7 +30,7 @@ This function calculates the SSIM, a measure of similarity between two raster im
 This function computes the SSIM index for two raster images.
 }
 \examples{
-img1<-SSIMmap::groups2nm
-img2<-SSIMmap::single2nm
+img1<-terra::rast(system.file("data", "groups2nm.tif", package = "SSIMmap"))
+img2<-terra::rast(system.file("data", "single2nm.tif", package = "SSIMmap"))
 ssim_raster(img1,img2)
 }
