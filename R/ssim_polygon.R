@@ -22,7 +22,7 @@
 #' @importFrom dplyr select contains
 #' @importFrom GWmodel gwss
 #' @importFrom knitr kable
-#' @importFrom stats min max mean sd var
+#' @importFrom stats min max sd var
 #' @examples
 #' Load example sf object Toronto Area with attributes for maps:
 #' Pampalon Index,CIMD Index,
@@ -168,10 +168,10 @@ ssim_polygon<-function(shape,map1,map2,standardize=TRUE,bandwidth=NULL,k1=NULL,k
   colnames(df)<-c("SSIM","SIM","SIV","SIP")
 
   if(global){
-    SSIM_mean <- stats::mean(df$SSIM)
-    SIM_mean <- stats::mean(df$SIM)
-    SIV_mean <- stats::mean(df$SIV)
-    SIP_mean <- stats::mean(df$SIP)
+    SSIM_mean <- mean(df$SSIM)
+    SIM_mean <- mean(df$SIM)
+    SIV_mean <- mean(df$SIV)
+    SIP_mean <- mean(df$SIP)
 
     SSIM_min <- stats::min(df$SSIM)
     SIM_min <- stats::min(df$SIM)
