@@ -110,7 +110,6 @@ plot(result_raster)
 ### Example of visualizing the SSIM
 
 ```{r, warning = FALSE, fig.show = "hold", out.width = "45%"}
-library(ggspatial)
 library(ggplot2)
 library(RColorBrewer)
 

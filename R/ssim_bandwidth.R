@@ -20,7 +20,7 @@
 #' @importFrom dplyr select contains
 #' @importFrom GWmodel gwss
 #' @importFrom scales rescale
-#'
+#' @importFrom stats mean sd var
 #' @examples
 #' Load example sf class object Toronto Area with attributes for maps:
 #' Pampalon Index,CIMD Index,

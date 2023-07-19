@@ -13,13 +13,9 @@ Imports:
       dplyr, 
       terra,
       sf, 
-      tidyr,
       GWmodel,
       sp,
       ggplot2,
-      RcolorBrewer,
-      sd,
-      var,
       knitr
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -31,9 +27,7 @@ Depends:
     R (>= 2.10)
 LazyData: true
 Suggests: 
-    ggplot2,
     testthat (>= 3.0.0),
-    knitr,
     rmarkdown
 Config/testthat/edition: 3
 VignetteBuilder: knitr
