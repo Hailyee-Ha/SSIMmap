@@ -9,7 +9,7 @@ ssim_bandwidth(
   map1,
   map2,
   max_bandwidth = max_bandwidth,
-  standarize = TRUE,
+  standardize = TRUE,
   option = "midpoint"
 )
 }
@@ -22,9 +22,9 @@ ssim_bandwidth(
 
 \item{max_bandwidth}{maximum size of the bandwidth, and the maximum size needs to be larger than 12}
 
-\item{option}{the option for selecting the range of the bandwidth derived from the optimal trade-off between bias and variance. Default is "midpoint"}
-
 \item{standardize}{if TRUE, standardize the variables before computing the SSIM. Default is TRUE}
+
+\item{option}{the option for selecting the range of the bandwidth derived from the optimal trade-off between bias and variance. Default is "midpoint"}
 }
 \value{
 a plot showing the bias/variance trade off and the range of the optimal trade-off as vertical lines including the square root of N results as well. In addition, the console shows the results.
@@ -41,7 +41,7 @@ Users can select the bandwidth values from the range of the optimal trade-off,wh
 # Load example sf polygon Toronto Areas with attributes for maps:
 # Pampalon Index,CIMD Index,
 #and percentage of household commuting within the same Census Sub Division of residence
-shape<-SSIMmap::polygon
+shape<-SSIMmap::Toronto
 
 # Mapping two attributes
 plot(shape$CIMD_SDD)

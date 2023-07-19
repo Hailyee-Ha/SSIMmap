@@ -22,14 +22,14 @@
 #' @importFrom scales rescale
 #'
 #' @examples
-#' # Load example sf polygon Toronto Areas with attributes for maps:
-#' # Pampalon Index,CIMD Index,
-#' #and percentage of household commuting within the same Census Sub Division of residence
-#' shape<-SSIMmap::polygon
+#' Load example sf class object Toronto Area with attributes for maps:
+#' Pampalon Index,CIMD Index,
+#' and percentage of household commuting within the same Census Sub Division of residence
+#' shape<-SSIMmap::Toronto
 #'
-#' # Mapping two attributes
-#' plot(shape$CIMD_SDD)
-#' plot(shape$PP_SDD)
+#' Mapping two attributes
+#' plot(shape$CIMD_SDD,border=NA)
+#' plot(shape$PP_SDD,border=NA)
 #'
 #' #Execution of bandwidth with maps above
 #' \donttest{ ssim_bandwidth(shape,CIMD_SDD,PP_SDD,max_bandwidth=100) }
@@ -38,7 +38,7 @@
 
 
 # Functions ---------------------------------------------------------------
-ssim_bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standarize=TRUE,option="midpoint"){
+ssim_bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standardize=TRUE,option="midpoint"){
 
   if(map1==map2){
     stop("variables are identical")
@@ -50,7 +50,7 @@ ssim_bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standarize
     stop("The maximum size of the bandwdith is larger than the number of lattice")
   }
 
-  if(standarize){
+  if(standardize){
     shape_df<-as.data.frame(shape)
     shape_df$z_score_map1<-(shape_df[,map1]-mean(shape_df[,map1]))/sd(shape_df[,map1])
     shape_df$z_score_map2<-(shape_df[,map2]-mean(shape_df[,map2]))/sd(shape_df[,map2])
