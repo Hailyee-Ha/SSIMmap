@@ -17,6 +17,9 @@ Imports:
       GWmodel,
       sp,
       ggplot2,
+      RcolorBrewer,
+      sd,
+      var,
       knitr
 License: MIT + file LICENSE
 Encoding: UTF-8

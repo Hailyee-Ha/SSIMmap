@@ -45,7 +45,7 @@ The ssim_polygon function computes the SSIM for each polygon and can be returned
 This function computes the SSIM index for two polygon maps.
 }
 \examples{
-Load example sf polygon Toronto Areas with attributes for maps:
+Load example sf object Toronto Area with attributes for maps:
 Pampalon Index,CIMD Index,
 and percentage of household commuting within the same Census Sub Division of residence
 shape<-SSIMmap::Toronto
