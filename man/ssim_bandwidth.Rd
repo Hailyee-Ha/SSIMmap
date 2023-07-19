@@ -14,7 +14,7 @@ ssim_bandwidth(
 )
 }
 \arguments{
-\item{shape}{a \code{sf} polygon containing attributes that can create polygon-based maps}
+\item{shape}{a \code{sf} polygon containing the polygon data with attributes that can create polygon-based maps}
 
 \item{map1}{the name of the first map to compare as a column in the shape}
 
@@ -41,7 +41,7 @@ Users can select the bandwidth values from the range of the optimal trade-off,wh
 # Load example sf polygon Toronto Areas with attributes for maps:
 # Pampalon Index,CIMD Index,
 #and percentage of household commuting within the same Census Sub Division of residence
-shape<-SSIMmap::Toronto
+shape<-SSIMmap::polygon
 
 # Mapping two attributes
 plot(shape$CIMD_SDD)

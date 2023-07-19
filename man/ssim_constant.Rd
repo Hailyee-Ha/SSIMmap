@@ -2,7 +2,7 @@
 % Please edit documentation in R/ssim_constant.R
 \name{ssim_constant}
 \alias{ssim_constant}
-\title{Calcualte rescaled constants for SSIM Index}
+\title{Calculate constants for SSIM Index}
 \usage{
 ssim_constant(shape, map1, map2, standardize = TRUE)
 }
@@ -19,7 +19,7 @@ ssim_constant(shape, map1, map2, standardize = TRUE)
 The rescaled constants (k1 and k2)
 }
 \description{
-This function calculates the rescaled constants (k1 and k2) for the SSIM index based on the ranges of the maps
+This function rescales the constants (k1 and k2) for the SSIM index based on the global maximum value of the maps
 }
 \details{
 This function calculates the rescaled constants (k1 and k2) for the SSIM index.
@@ -30,7 +30,7 @@ The SSIM for maps can use the rescaled k1 and k2 based on the global maximum val
 #' # Load example sf polygon
 Toronto Areas with attributes for maps:Pampalon Index,CIMD Index,
 and percentage of household commuting within the same Census Sub Division of residence)
-shape<-SSIMmap::Toronto
+shape<-SSIMmap::polygon
 
 ssim_constant(shape,"PP_SDD","CIMD_SDD")
 

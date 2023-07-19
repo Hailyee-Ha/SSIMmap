@@ -1,6 +1,6 @@
 Package: SSIMmap
-Title: The R package: the structural similarity index measure (SSIM) for maps
-Version: 1.0.0
+Title: The structural similarity index measure (SSIM) for maps
+Version: 0.1.0
 Authors@R: 
     c(person(given="Hui Jeong (Hailyee)", family="Ha", email="hha24@uwo.ca", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-5229-4528")), person(given="Jed", family="Long", email="jed.long@uwo.ca", role="aut", comment = c(ORCID = "0000-0003-3961-3085")))
