@@ -173,20 +173,20 @@ ssim_polygon<-function(shape,map1,map2,standardize=TRUE,bandwidth=NULL,k1=NULL,k
     SIV_mean <- mean(df$SIV)
     SIP_mean <- mean(df$SIP)
 
-    SSIM_min <- stats::min(df$SSIM)
-    SIM_min <- stats::min(df$SIM)
-    SIV_min <- stats::min(df$SIV)
-    SIP_min <- stats::min(df$SIP)
+    SSIM_min <-min(df$SSIM)
+    SIM_min <- min(df$SIM)
+    SIV_min <- min(df$SIV)
+    SIP_min <- min(df$SIP)
 
-    SSIM_max <- stats::max(df$SSIM)
-    SIM_max <- stats::max(df$SIM)
-    SIV_max <- stats::max(df$SIV)
-    SIP_max <- stats::max(df$SIP)
+    SSIM_max <- max(df$SSIM)
+    SIM_max <- max(df$SIM)
+    SIV_max <- max(df$SIV)
+    SIP_max <- max(df$SIP)
 
-    SSIM_sd <- stats::sd(df$SSIM)
-    SIM_sd <- stats::sd(df$SIM)
-    SIV_sd <- stats::sd(df$SIV)
-    SIP_sd <- stats::sd(df$SIP)
+    SSIM_sd <- sd(df$SSIM)
+    SIM_sd <- sd(df$SIM)
+    SIV_sd <- sd(df$SIV)
+    SIP_sd <- sd(df$SIP)
 
     result <- data.frame(
       Statistic = c("Mean", "Min", "Max", "SD"),
