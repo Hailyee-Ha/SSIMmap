@@ -15,8 +15,8 @@
 #' @importFrom terra  global focal rast crop
 #'
 #' @examples
-#' image_path1 <- system.file("ex/groups2nm.tif", package = "SSIMmap")
-#' image_path2 <- system.file("ex/single2nm.tif", package = "SSIMmap")
+#' image_path1 <- system.file("inst/ex/groups2nm.tif", package = "SSIMmap")
+#' image_path2 <- system.file("inst/ex/single2nm.tif", package = "SSIMmap")
 #' img1<-rast(image_path1)
 #' img2<-rast(image_path2)
 #' ssim_raster(img1,img2)
