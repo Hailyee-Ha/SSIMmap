@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 ```{r setup, echo = FALSE}
-library(spnaf)
+library(SSIMmap)
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
@@ -30,8 +30,8 @@ library(sf)
 library(terra)
 shape<- SSIMmap::Toronto
 plot(shape, border=NA)
-img1<-terra::rast(system.file("extdata", "groups2nm.tif", package = "SSIMmap"))
-img2<-terra::rast(system.file("extdata", "single2nm.tif", package = "SSIMmap"))
+img1<-terra::rast(system.file("ex/groups2nm.tif", package = "SSIMmap"))
+img2<-terra::rast(system.file("ex/single2nm.tif", package = "SSIMmap"))
 plot(img1)
 plot(img2)
 ```

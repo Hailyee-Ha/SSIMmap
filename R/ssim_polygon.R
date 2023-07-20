@@ -22,7 +22,7 @@
 #' @importFrom dplyr select contains
 #' @importFrom GWmodel gwss
 #' @importFrom knitr kable
-#' @importFrom stats sd var
+#' @importFrom stats sd var mean
 #' @examples
 #' # Load example sf object Toronto Area with attributes for maps:
 #' # Pampalon Index,CIMD Index,

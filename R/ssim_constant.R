@@ -5,7 +5,7 @@
 #' @param map1 the name of the first map to compare
 #' @param map2 the name of the second map to compare
 #' @param standardize If TRUE, standardize the variables before computing the SSIM. Default is TRUE.
-#'
+#' @importFrom stats sd var mean
 #' @return The rescaled constants (k1 and k2)
 #' @details This function calculates the rescaled constants (k1 and k2) for the SSIM index.
 #' k1 and k2 in the original SSIM method,which are for the 8-bit grey scale images, are 0.01 and 0.03 respectively.
