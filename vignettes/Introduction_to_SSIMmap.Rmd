@@ -9,13 +9,15 @@ vignette: >
 
 The goal of the *SSIMmap* package  extend [the classical SSIM method](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=1284395) for irregular lattice-based maps and raster images.The original SSIM method was developed to compare two image mimicking the human visual system. The *SSIMmap* package applies this method to two types of maps (polygon and raster). The geographical SSIM method incorporates well-developed [geographically weighted summary statistics](https://www.sciencedirect.com/science/article/pii/S0198971501000096?via%3Dihub) with an adaptive bandwidth kernel function for irregular lattice-based maps. This package includes four key functions: **ssim_bandwidth**, **ssim_constant**, **ssim_polygon**,**ssim_raster**. Users who want to compare two maps and quantify their similarities can utilize this package and visualize the results using other R packages(e.g.,[*tmap*](https://cran.r-project.org/web/packages/tmap/index.html) and [*ggplot*](https://cran.r-project.org/web/packages/ggplot2/index.html)).
 
-## Installation: SSIMmap
-
-You can install the development version of *SSIMmap* from [GitHub](https://github.com/Hailyee-Ha/SSIMmap.git) with the following commands:
-
-```{r , eval = FALSE}
-devtools::install_github("Hailyee-Ha/SSIMmap")
-library(SSIMmap)
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+```{r setup, echo = FALSE}
+library(spnaf)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
 ## Data: polygon, groups2nm.tif, and single2nm.tif
@@ -28,8 +30,8 @@ library(sf)
 library(terra)
 shape<- SSIMmap::Toronto
 plot(shape, border=NA)
-img1<-terra::rast(system.file("data", "groups2nm.tif", package = "SSIMmap"))
-img2<-terra::rast(system.file("data", "single2nm.tif", package = "SSIMmap"))
+img1<-terra::rast(system.file("extdata", "groups2nm.tif", package = "SSIMmap"))
+img2<-terra::rast(system.file("extdata", "single2nm.tif", package = "SSIMmap"))
 plot(img1)
 plot(img2)
 ```
@@ -117,7 +119,7 @@ library(RColorBrewer)
  palfunc <- function (n, alpha = 1, begin = 1, end = 0, direction = 1)
   {
    #Create a 8-color palette from the RColorBrewer package called "PRGn (Purple to Green)"
-    colors <- RColorBrewer::brewer.pal(8, "PRGn")
+    colors <- brewer.pal(8, "PRGn")
     if (direction < 0) colors <- rev(colors)
     colorRampPalette(colors, alpha = alpha)(n)
  }
@@ -133,7 +135,7 @@ ggplot() +
     axis.text.x = element_blank(),
     axis.text.y = element_blank(),
     axis.ticks = element_blank()
-  )+ ggspatial::annotation_scale()
+  )
 
 #Visualize the SSIM result (the CIMD vs. commuting pattern) on the map
 ggplot() +
@@ -146,7 +148,7 @@ ggplot() +
     axis.text.x = element_blank(),
     axis.text.y = element_blank(),
     axis.ticks = element_blank()
-  )+ ggspatial::annotation_scale()
+  )
 
 ```
 

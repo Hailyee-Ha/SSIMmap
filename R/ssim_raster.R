@@ -12,12 +12,11 @@
 #' @return If global is True, returning the global average of SSIM, SIM, SIV, and SIP. If the option is FALSE, a \code{raster} raster brick containing the SSIM, SIM, SIV, and SIP for each cell is returned
 #' @details This function computes the SSIM index for two raster images.
 #'
-#' @importFrom terra  global  focal rast crop
+#' @importFrom terra  global focal rast crop
 #'
 #' @examples
 #' image_path1 <- system.file("data", "groups2nm.tif", package = "SSIMmap")
 #' image_path2 <- system.file("data", "single2nm.tif", package = "SSIMmap")
-#' ssim_raster(img1,img2)
 #' img1<-rast(image_path1)
 #' img2<-rast(image_path2)
 #' ssim_raster(img1,img2)

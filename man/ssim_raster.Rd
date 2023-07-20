@@ -32,7 +32,6 @@ This function computes the SSIM index for two raster images.
 \examples{
 image_path1 <- system.file("data", "groups2nm.tif", package = "SSIMmap")
 image_path2 <- system.file("data", "single2nm.tif", package = "SSIMmap")
-ssim_raster(img1,img2)
 img1<-rast(image_path1)
 img2<-rast(image_path2)
 ssim_raster(img1,img2)

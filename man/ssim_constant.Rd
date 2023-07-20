@@ -27,11 +27,10 @@ k1 and k2 in the original SSIM method,which are for the 8-bit grey scale images,
 The SSIM for maps can use the rescaled k1 and k2 based on the global maximum value of two maps.
 }
 \examples{
-Load example sf class Toronto Area with attributes for maps:
-Toronto Areas with attributes for maps:Pampalon Index,CIMD Index,
-and percentage of household commuting within the same Census Sub Division of residence)
+# Load example sf class Toronto Area with attributes for maps:
+# Toronto Areas with attributes for maps:Pampalon Index,CIMD Index,
+# and percentage of household commuting within the same Census Sub Division of residence)
 shape<-SSIMmap::Toronto
-
 ssim_constant(shape,"PP_SDD","CIMD_SDD")
 
 }

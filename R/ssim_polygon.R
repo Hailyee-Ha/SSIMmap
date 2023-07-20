@@ -22,20 +22,20 @@
 #' @importFrom dplyr select contains
 #' @importFrom GWmodel gwss
 #' @importFrom knitr kable
-#' @importFrom stats min max sd var
+#' @importFrom stats sd var
 #' @examples
-#' Load example sf object Toronto Area with attributes for maps:
-#' Pampalon Index,CIMD Index,
-#' and percentage of household commuting within the same Census Sub Division of residence
+#' # Load example sf object Toronto Area with attributes for maps:
+#' # Pampalon Index,CIMD Index,
+#' # and percentage of household commuting within the same Census Sub Division of residence
 #' shape<-SSIMmap::Toronto
 #'
-#' Mapping two attributes
+#' # Mapping two attributes
 #' plot(shape$CIMD_SDD)
 #' plot(shape$PP_SDD)
-#' Finding global ssim
+#' # Finding global ssim
 #'
 #' ssim_polygon(shape,"CIMD_SDD","PP_SDD")
-#' #Finding local ssim
+#' # Finding local ssim
 #' df<-ssim_polygon(shape,"CIMD_SDD","PP_SDD",global=FALSE)
 
 #' @export ssim_polygon

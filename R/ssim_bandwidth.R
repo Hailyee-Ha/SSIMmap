@@ -20,18 +20,18 @@
 #' @importFrom dplyr select contains
 #' @importFrom GWmodel gwss
 #' @importFrom scales rescale
-#' @importFrom stats mean sd var
+#' @importFrom stats sd var
 #' @examples
-#' Load example sf class object Toronto Area with attributes for maps:
-#' Pampalon Index,CIMD Index,
-#' and percentage of household commuting within the same Census Sub Division of residence
+#' # Load example sf class object Toronto Area with attributes for maps:
+#' # Pampalon Index,CIMD Index,
+#' # and percentage of household commuting within the same Census Sub Division of residence
 #' shape<-SSIMmap::Toronto
 #'
-#' Mapping two attributes
+#' # Mapping two attributes
 #' plot(shape$CIMD_SDD,border=NA)
 #' plot(shape$PP_SDD,border=NA)
 #'
-#' #Execution of bandwidth with maps above
+#' # Execution of bandwidth with maps above
 #' \donttest{ ssim_bandwidth(shape,CIMD_SDD,PP_SDD,max_bandwidth=100) }
 #'
 #' @export ssim_bandwidth
@@ -130,23 +130,23 @@ ssim_bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standardiz
   colnames(df_bias_map2)<-c("Bandwidth","Bias")
   colnames(df_variance_map1)<-c("Bandwidth","Variance")
   colnames(df_variance_map2)<-c("Bandwidth","Variance")
-  df_bias_map1$R_Bias<-rescale(df_bias_map1$Bias)
-  df_bias_map2$R_Bias<-rescale(df_bias_map2$Bias)
-  df_variance_map1$R_Variance<-rescale(df_variance_map1$Variance)
-  df_variance_map2$R_Variance<-rescale(df_variance_map2$Variance)
+  df_bias_map1$Bias<-rescale(df_bias_map1$Bias)
+  df_bias_map2$Bias<-rescale(df_bias_map2$Bias)
+  df_variance_map1$Variance<-rescale(df_variance_map1$Variance)
+  df_variance_map2$Variance<-rescale(df_variance_map2$Variance)
 
-  P_Tradeoff_map1<-as.data.frame(df_bias_map1$R_Bias-df_variance_map1$R_Variance)
+  P_Tradeoff_map1<-as.data.frame(df_bias_map1$Bias-df_variance_map1$Variance)
   Tradeoff_map1<-as.data.frame(cbind(bw_order,P_Tradeoff_map1))
-  colnames(Tradeoff_map1)<-c("Bandwidth","Tradeoff")
+  colnames(Tradeoff_map1)<-c("BW","Tradeoff")
   index_map1<-which.min(abs(Tradeoff_map1$Tradeoff))
-  bw_closest_to_zero_map1<-Tradeoff_map1$Bandwidth[index_map1]
+  bw_closest_to_zero_map1<-Tradeoff_map1$BW[index_map1]
   bw_closest_to_zero_map1<-ceiling(bw_closest_to_zero_map1)
 
-  P_Tradeoff_map2<-as.data.frame(df_bias_map2$R_Bias-df_variance_map2$R_Variance)
+  P_Tradeoff_map2<-as.data.frame(df_bias_map2$Bias-df_variance_map2$Variance)
   Tradeoff_map2<-as.data.frame(cbind(bw_order,P_Tradeoff_map2))
-  colnames(Tradeoff_map2)<-c("Bandwidth","Tradeoff")
+  colnames(Tradeoff_map2)<-c("BW","Tradeoff")
   index_map2<-which.min(abs(Tradeoff_map2$Tradeoff))
-  bw_closest_to_zero_map2<-Tradeoff_map2$Bandwidth[index_map2]
+  bw_closest_to_zero_map2<-Tradeoff_map2$BW[index_map2]
   bw_closest_to_zero_map2<-ceiling(bw_closest_to_zero_map2)
 
   num_rows <- nrow(shape)
