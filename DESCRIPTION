@@ -12,10 +12,10 @@ Imports:
       scales,
       dplyr, 
       terra,
-      sf, 
       GWmodel,
-      sp,
       ggplot2,
+      rasterVis,
+      sf,
       knitr
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -24,10 +24,12 @@ RoxygenNote: 7.2.3
 URL: https://github.com/Hailyee-Ha/SSIMmap
 BugReports: https://github.com/Hailyee-Ha/SSIMmap/issues
 Depends: 
-    R (>= 2.10)
+    R (>= 3.5.0) 
 LazyData: true
 Suggests: 
-    testthat (>= 3.0.0),
+    RColorBrewer,
+    testthat,
+    rlang,
     rmarkdown
 Config/testthat/edition: 3
 VignetteBuilder: knitr

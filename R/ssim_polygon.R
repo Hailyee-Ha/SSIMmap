@@ -18,11 +18,11 @@
 #' @return If global is TRUE, a string containing the global average SSIM, SIM, SIV, and SIP.
 #' If global is FALSE, a \code{sf} polygon containing the SSIM, SIM, SIV, and SIP for each polygon.
 #'
-#' @importFrom sf as_Spatial
+#' @importFrom sf as_Spatial st_read
 #' @importFrom dplyr select contains
 #' @importFrom GWmodel gwss
 #' @importFrom knitr kable
-#' @importFrom stats sd var mean
+#' @importFrom stats sd var
 #' @examples
 #' # Load example sf object Toronto Area with attributes for maps:
 #' # Pampalon Index,CIMD Index,

@@ -13,16 +13,17 @@
 #' @details This function computes the SSIM index for two raster images.
 #'
 #' @importFrom terra  global focal rast crop
-#'
+#' @importFrom rasterVis levelplot
 #' @examples
-#' image_path1 <- system.file("inst/ex/groups2nm.tif", package = "SSIMmap")
-#' image_path2 <- system.file("inst/ex/single2nm.tif", package = "SSIMmap")
-#' img1<-rast(image_path1)
-#' img2<-rast(image_path2)
+#'
+#' image_path1 <- system.file("ex","groups2nm.tif", package = "SSIMmap", mustWork = TRUE)
+#' image_path2 <- system.file("ex","single2nm.tif", package = "SSIMmap", mustWork = TRUE)
+#' img1<-terra::rast(image_path1)
+#' img2<-terra::rast(image_path2)
 #' ssim_raster(img1,img2)
 #' result_raster<-ssim_raster(img1,img2,global=FALSE)
-#' result_raster
-#' plot(result_raster)
+#' library(rasterVis)
+#' levelplot(result_raster)
 #' @export ssim_raster
 
 

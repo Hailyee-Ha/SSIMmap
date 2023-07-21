@@ -20,7 +20,7 @@
 #' @importFrom dplyr select contains
 #' @importFrom GWmodel gwss
 #' @importFrom scales rescale
-#' @importFrom stats sd var mean
+#' @importFrom stats sd var
 #' @examples
 #' # Load example sf class object Toronto Area with attributes for maps:
 #' # Pampalon Index,CIMD Index,
@@ -28,11 +28,13 @@
 #' shape<-SSIMmap::Toronto
 #'
 #' # Mapping two attributes
-#' plot(shape$CIMD_SDD,border=NA)
-#' plot(shape$PP_SDD,border=NA)
+#' plot(shape$CIMD_SDD)
+#' plot(shape$PP_SDD)
 #'
 #' # Execution of bandwidth with maps above
-#' \donttest{ ssim_bandwidth(shape,CIMD_SDD,PP_SDD,max_bandwidth=100) }
+#' \donttest{
+#' ssim_bandwidth(shape,"CIMD_SDD","PP_SDD",max_bandwidth=100)
+#' }
 #'
 #' @export ssim_bandwidth
 
@@ -152,7 +154,7 @@ ssim_bandwidth<-function(shape, map1,map2,max_bandwidth=max_bandwidth,standardiz
   num_rows <- nrow(shape)
   sqrt_num_rows <- ceiling(sqrt(num_rows))
 
-  plot<-ggplot2::ggplot()+ggplot2::geom_line(data=df_bias_map1,ggplot2::aes(Bandwidth,R_Bias),color="dark blue")+ggplot2::geom_line(data=df_variance_map1,ggplot2::aes(Bandwidth,R_Variance),linetype="dashed",color="dark blue")+ggplot2::geom_line(data=df_bias_map2,ggplot2::aes(Bandwidth,R_Bias),color="dark green")+ggplot2::geom_line(data=df_variance_map2,ggplot2::aes(Bandwidth,R_Variance),linetype="dashed",color="dark green")
+  plot<-ggplot2::ggplot()+ggplot2::geom_line(data=df_bias_map1,ggplot2::aes(Bandwidth,Bias),color="dark blue")+ggplot2::geom_line(data=df_variance_map1,ggplot2::aes(Bandwidth,Variance),linetype="dashed",color="dark blue")+ggplot2::geom_line(data=df_bias_map2,ggplot2::aes(Bandwidth,Bias),color="dark green")+ggplot2::geom_line(data=df_variance_map2,ggplot2::aes(Bandwidth,Variance),linetype="dashed",color="dark green")
   plot<-plot+ggplot2::geom_rect(ggplot2::aes(xmin = min(bw_closest_to_zero_map1,bw_closest_to_zero_map2), xmax = max(bw_closest_to_zero_map1,bw_closest_to_zero_map2), ymin = 0, ymax = 1), fill = "grey", alpha = 0.5)
   plot<-plot+ggplot2::geom_vline(xintercept = sqrt_num_rows, color="black",linewidth=0.3, alpha = 0.5)+geom_vline(xintercept = bw_closest_to_zero_map1,color="red",linewidth=0.3, alpha = 0.5)+geom_vline(xintercept = bw_closest_to_zero_map2,color="red",linewidth=0.3, alpha = 0.5)+labs(x="Bandwidth",y="bias/variance")
   plot<-plot+ggplot2::geom_text(ggplot2::aes(x= sqrt_num_rows,y=0.5), label = as.character(sqrt_num_rows),vjust = -1,size=4)

@@ -44,10 +44,12 @@ Users can select the bandwidth values from the range of the optimal trade-off,wh
 shape<-SSIMmap::Toronto
 
 # Mapping two attributes
-plot(shape$CIMD_SDD,border=NA)
-plot(shape$PP_SDD,border=NA)
+plot(shape$CIMD_SDD)
+plot(shape$PP_SDD)
 
 # Execution of bandwidth with maps above
-\donttest{ ssim_bandwidth(shape,CIMD_SDD,PP_SDD,max_bandwidth=100) }
+\donttest{
+ssim_bandwidth(shape,"CIMD_SDD","PP_SDD",max_bandwidth=100)
+}
 
 }

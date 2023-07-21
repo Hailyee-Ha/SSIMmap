@@ -30,8 +30,8 @@ library(sf)
 library(terra)
 shape<- SSIMmap::Toronto
 plot(shape, border=NA)
-img1<-terra::rast(system.file("ex/groups2nm.tif", package = "SSIMmap"))
-img2<-terra::rast(system.file("ex/single2nm.tif", package = "SSIMmap"))
+img1<-terra::rast(system.file("ex","groups2nm.tif", package = "SSIMmap", mustWork = TRUE))
+img2<-terra::rast(system.file("ex","single2nm.tif", package = "SSIMmap", mustWork = TRUE))
 plot(img1)
 plot(img2)
 ```
@@ -104,9 +104,10 @@ args(ssim_raster)
 ### How to execute
 
 ```{r}
+library(rasterVis)
 ssim_raster(img1,img2)
 result_raster<-ssim_raster(img1,img2,global = FALSE)
-plot(result_raster)
+levelplot(result_raster)
 ```
 
 ### Example of visualizing the SSIM
