@@ -28,7 +28,7 @@ Depends:
 LazyData: true
 Suggests: 
     RColorBrewer,
-    testthat,
+    testthat (>= 3.0.0),
     rlang,
     rmarkdown
 Config/testthat/edition: 3
