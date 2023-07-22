@@ -35,7 +35,7 @@ This function calculates the bandwidth size for the computation of the Structura
 1) The square root of N.
 2) The trade-off between the bias and variance of the two maps.
 
-The first method for the bandwidth selection calculates the square root of the sample size n, which is based on the relative rate of convergence that could minimize the mean integrated squared error([Abramson,1982](https://www.jstor.org/stable/2240724)). The second method aims to balance local variances and bias in spatial data (geographically weighted mean), with an intent to minimize the difference between them. The primary goal of this method is to find a bandwidth size that balances the bias-variance trade-off and therefore effectively captures the scale of the underlying spatial structure. More information about the bias-variance trade-off can be found in the paper ["On the measurement ofbias in geographically weighted regression models"](https://www.sciencedirect.com/science/article/pii/S2211675320300476).By default for the second method,the function chooses the mid-point of the optimal trade-off between the bias and variance for map1 and map2. A user can choose the upper (the larger one) or the lower (the smaller one) value between the two of the optimal trade-off between the bias and variance
+The first method for the bandwidth selection calculates the square root of the sample size n, which is based on the relative rate of convergence that could minimize the mean integrated squared error([Abramson,1982](https://www.jstor.org/stable/2240724)). The second method aims to balance local variances and bias in spatial data (geographically weighted mean), with an intent to minimize the difference between them. The primary goal of this method is to find a bandwidth size that balances the bias-variance trade-off and therefore effectively captures the scale of the underlying spatial structure. More information about the bias-variance trade-off can be found in the paper ["On the measurement ofbias in geographically weighted regression models"](https://www.sciencedirect.com/science/article/pii/S2211675320300476). By default for the second method,the function chooses the mid-point of the optimal trade-off between the bias and variance for map1 and map2. A user can choose the upper (the larger one) or the lower (the smaller one) value between the two of the optimal trade-off between the bias and variance
 
 The function takes as input an object of  *sf* class, which includes columns necessary for SSIM calculation. It outputs two possible selections for the bandwidth size based on the selected method. Additionally, the function generates a plot illustrating the relationship between bias, variance, and bandwidth size with a vertical line of the square root of N result.
 
@@ -86,7 +86,7 @@ result_raster<-ssim_raster(img1,img2,global = FALSE)
 levelplot(result_raster)
 ```
 
-### Example of visualizing the SSIM for irregular lattice maps using ggplot2
+## Example of visualizing the SSIM for irregular lattice maps using ggplot2
 
 ```
 library(ggplot2)
@@ -120,7 +120,7 @@ ggplot() +
 
 ```
 
-### Reference
+## Reference
 
 -   Brunsdon, C., Fotheringham, A.S. and Charlton, M. (2002). Geographically weighted summary statistics---a framework for localised exploratory data analysis. *Computers, Environment and Urban Systems*, 26(6), pp.501-524. <https://doi.org/10.1016/S0198-9715(01)00009-6>
 -   Jones, E.L., Rendell, L., Pirotta, E. and Long, J.A. (2016). Novel application of a quantitative spatial comparison tool to species distribution data. *Ecological Indicators*, 70, pp.67-76. <https://doi.org/10.1016/j.ecolind.2016.05.051>
