@@ -12,7 +12,6 @@ Imports:
       scales,
       dplyr, 
       terra,
-      GWmodel,
       ggplot2,
       rasterVis,
       sf,

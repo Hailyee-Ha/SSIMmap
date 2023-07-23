@@ -20,7 +20,6 @@
 #'
 #' @importFrom sf as_Spatial st_read
 #' @importFrom dplyr select contains
-#' @importFrom GWmodel gwss
 #' @importFrom knitr kable
 #' @importFrom stats sd var
 #' @examples
@@ -64,17 +63,16 @@ ssim_polygon<-function(shape,map1,map2,standardize=TRUE,bandwidth=NULL,k1=NULL,k
     names(z_scores)<- sub("V1",map1,names(z_scores))
     names(z_scores)<- sub("V2",map2,names(z_scores))
     shape_merged<-cbind(shape,z_scores)
-    shape_merged<-sf::as_Spatial(shape_merged)
+    #shape_merged<-sf::as_Spatial(shape_merged)
     map1<-as.character(colnames(z_scores[1]))
     map2<-as.character(colnames(z_scores[2]))
     if(is.null(bandwidth)){
-      result<-GWmodel::gwss(shape_merged,vars = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=sqrt_num_rows)
+      gwss_result<-suppressWarnings(gwss_new(shape_merged,vars = c(map1,map2),bw=sqrt_num_rows))
 
     }
     else{
-      result<-GWmodel::gwss(shape_merged,vars = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=bandwidth)
+      gwss_result<-suppressWarnings(gwss_new(shape_merged,vars = c(map1,map2),bw=bandwidth))
     }
-    gwss_result<-as.data.frame(result$SDF)
     mean<-dplyr::select(gwss_result,contains("LM"))
     sd<-dplyr::select(gwss_result,contains("LSD"))
     cov<-dplyr::select(gwss_result,contains("Cov"))
@@ -86,15 +84,13 @@ ssim_polygon<-function(shape,map1,map2,standardize=TRUE,bandwidth=NULL,k1=NULL,k
   }
 
   else{
-    shape_sp<-sf::as_Spatial(shape)
 
     if(is.null(bandwidth)){
-      result<-GWmodel::gwss(shape_sp,vars = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=sqrt_num_rows)
+      gwss_result<-gwss_new(shape,vars = c(map1,map2),bw=sqrt_num_rows)
 
     }else{
-    result<-GWmodel::gwss(shape_sp,vars = c(map1,map2), kernel = "gaussian",adaptive = TRUE,bw=bandwidth)
+      gwss_result<-gwss_new(shape,vars = c(map1,map2),bw=sqrt_num_rows)
     }
-    gwss_result<-as.data.frame(result$SDF)
     mean<-dplyr::select(gwss_result,contains("LM"))
     sd<-dplyr::select(gwss_result,contains("LSD"))
     cov<-dplyr::select(gwss_result,contains("Cov"))
