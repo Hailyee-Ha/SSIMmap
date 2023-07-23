@@ -1,5 +1,3 @@
-#' @importFrom magrittr %>%
-#' @importFrom rlang .data
 
 gw.dist <- function(dp, sp, focus=0) {
   focus_point <- sp[focus, ]

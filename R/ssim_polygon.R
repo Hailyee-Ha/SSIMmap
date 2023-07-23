@@ -18,7 +18,6 @@
 #' @return If global is TRUE, a string containing the global average SSIM, SIM, SIV, and SIP.
 #' If global is FALSE, a \code{sf} polygon containing the SSIM, SIM, SIV, and SIP for each polygon.
 #'
-#' @importFrom sf as_Spatial st_read
 #' @importFrom dplyr select contains
 #' @importFrom knitr kable
 #' @importFrom stats sd var
@@ -63,7 +62,6 @@ ssim_polygon<-function(shape,map1,map2,standardize=TRUE,bandwidth=NULL,k1=NULL,k
     names(z_scores)<- sub("V1",map1,names(z_scores))
     names(z_scores)<- sub("V2",map2,names(z_scores))
     shape_merged<-cbind(shape,z_scores)
-    #shape_merged<-sf::as_Spatial(shape_merged)
     map1<-as.character(colnames(z_scores[1]))
     map2<-as.character(colnames(z_scores[2]))
     if(is.null(bandwidth)){

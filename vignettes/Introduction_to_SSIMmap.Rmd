@@ -9,14 +9,9 @@ vignette: >
 
 The goal of the *SSIMmap* package  extend [the classical SSIM method](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=1284395) for irregular lattice-based maps and raster images.The original SSIM method was developed to compare two image mimicking the human visual system. The *SSIMmap* package applies this method to two types of maps (polygon and raster). The geographical SSIM method incorporates well-developed [geographically weighted summary statistics](https://www.sciencedirect.com/science/article/pii/S0198971501000096?via%3Dihub) with an adaptive bandwidth kernel function for irregular lattice-based maps. This package includes four key functions: **ssim_bandwidth**, **ssim_constant**, **ssim_polygon**,**ssim_raster**. Users who want to compare two maps and quantify their similarities can utilize this package and visualize the results using other R packages (e.g.,[*tmap*](https://cran.r-project.org/web/packages/tmap/index.html) and [*ggplot*](https://cran.r-project.org/web/packages/ggplot2/index.html)).
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
+
 ```{r setup, echo = FALSE}
-library(SSIMmap)
+suppressPackageStartupMessages(library(SSIMmap))
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
@@ -54,8 +49,8 @@ args(ssim_bandwidth)
 ### How to execute
 
 ```{r}
-ssim_bandwidth(shape,"CIMD_SDD","PP_SDD",max_bandwidth= 200)
-ssim_bandwidth(shape,"CIMD_SDD","P_commute",max_bandwidth= 200)
+#ssim_bandwidth(shape,"CIMD_SDD","PP_SDD",max_bandwidth= 200)
+#ssim_bandwidth(shape,"CIMD_SDD","P_commute",max_bandwidth= 200)
 
 ```
 
@@ -75,7 +70,7 @@ ssim_constant(shape,"CIMD_SDD","PP_SDD")
 
 ## Functions: ssim_polygon
 
-This function calculates the SSIM index for a given polygon. It takes an object of the *sf* class as input, which includes the necessary columns for SSIM calculation. The function then returns either the global SSIM values (when global = TRUE) or the local SSIM values for each given polygon (when global = FALSE). By default, the bandwidth size is determined by the square root of N. A user has the flexibility to select their own bandwidth size or use the suggestions from the *ssim_bandwidth* function. 
+This function calculates the SSIM index for a given polygon. It takes an object of the *sf* class as input, which includes the necessary columns for SSIM calculation. The function then returns either the global SSIM values (global = TRUE) or the local SSIM values for each given polygon (global = FALSE). By default, the bandwidth size is determined by the square root of N. A user has the flexibility to select their own bandwidth size or use the suggestions from the *ssim_bandwidth* function. 
 
 ```{r}
 args(ssim_polygon)
@@ -104,10 +99,9 @@ args(ssim_raster)
 ### How to execute
 
 ```{r}
-library(rasterVis)
 ssim_raster(img1,img2)
 result_raster<-ssim_raster(img1,img2,global = FALSE)
-levelplot(result_raster)
+plot(result_raster)
 ```
 
 ### Example of visualizing the SSIM for irregular lattice maps using ggplot2

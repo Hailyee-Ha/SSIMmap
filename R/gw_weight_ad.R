@@ -1,5 +1,4 @@
-#' @importFrom magrittr %>%
-#' @importFrom rlang .data
+
 
 gw.weight<- function(vdist,bw){
 
@@ -24,9 +23,9 @@ gw.weight<- function(vdist,bw){
     dn <- bw/nr
     if(dn<=1)
     {
-      rnk<-rank(vdist,ties.method='first') # ranked distances
+      rnk<-rank(vdist,ties.method='first')
       cond<- which(rnk <= bw)
-      bw<- vdist[rnk==bw]                  # bandwidth is at bw-th distance
+      bw<- vdist[rnk==bw]
     }
     else
     {
@@ -35,5 +34,5 @@ gw.weight<- function(vdist,bw){
       wgt<- exp(vdist^2 / (-2 * bw^2))
   wgt
   }
-  }
 }
+

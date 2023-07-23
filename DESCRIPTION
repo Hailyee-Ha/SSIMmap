@@ -13,7 +13,6 @@ Imports:
       dplyr, 
       terra,
       ggplot2,
-      rasterVis,
       sf,
       knitr
 License: MIT + file LICENSE
@@ -28,7 +27,6 @@ LazyData: true
 Suggests: 
     RColorBrewer,
     testthat (>= 3.0.0),
-    rlang,
     rmarkdown
 Config/testthat/edition: 3
 VignetteBuilder: knitr

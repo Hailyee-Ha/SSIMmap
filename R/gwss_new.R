@@ -1,6 +1,5 @@
-#' @importFrom magrittr %>%
-#' @importFrom sf st_crs st_centroid
-#' @importFrom rlang .data
+#' @importFrom sf st_crs st_centroid st_coordinates
+#' @importFrom stats cov.wt
 
 gwss_new<-function (data, vars,bw){
   p4s <- st_crs(data)$proj4string
