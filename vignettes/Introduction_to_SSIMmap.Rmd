@@ -1,10 +1,12 @@
 ---
 title: "Introduction to SSIMmap"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to SSIMmap}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+ 
 ---
 
 The goal of the *SSIMmap* package  extend [the classical SSIM method](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=1284395) for irregular lattice-based maps and raster images.The original SSIM method was developed to compare two image mimicking the human visual system. The *SSIMmap* package applies this method to two types of maps (polygon and raster). The geographical SSIM method incorporates well-developed [geographically weighted summary statistics](https://www.sciencedirect.com/science/article/pii/S0198971501000096?via%3Dihub) with an adaptive bandwidth kernel function for irregular lattice-based maps. This package includes four key functions: **ssim_bandwidth**, **ssim_constant**, **ssim_polygon**,**ssim_raster**. Users who want to compare two maps and quantify their similarities can utilize this package and visualize the results using other R packages (e.g.,[*tmap*](https://cran.r-project.org/web/packages/tmap/index.html) and [*ggplot*](https://cran.r-project.org/web/packages/ggplot2/index.html)).
@@ -15,23 +17,30 @@ suppressPackageStartupMessages(library(SSIMmap))
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
-## Data: polygon, groups2nm.tif, and single2nm.tif
+# Data: polygon, groups2nm.tif, and single2nm.tif
 
-The package has three example data: 1) Toronto, 2) groups2nm (*terra raster object*), and 3) single2nm (*terra raster object*). First, **Toronto**(*an object of sf class*) is an example data, which stands for Toronto, ON. This contains neighborhood deprivation indices(the Canadian Index of Multiple Deprivation and Pampalon index) and the census variable(the percentage of households who commute within the census subdivision of residence) for 2016. The second and third data are *terra raster objects*. These raster objects represent the geographical location from 38 to 41◦N and 0.5–5◦E, centering on the islands of Ibiza, Mallorca and Menorca. The raster objects, labeled as 'groups2nm' and 'single2nm',  contain information on sperm whales. They represent the predicted probability of presence for groups and singletons at a spatial resolution of 2 nautical miles(NM) on a regular grid. For further information about 'groups2nm' and 'single2nm' please refer to the paper ["Novel application of a quantitative spatial comparison tool to species distribution data"](https://www.sciencedirect.com/science/article/pii/S1470160X16302990)
+The package has three example data: 1) Toronto, 2) groups2nm (*terra raster object*), and 3) single2nm (*terra raster object*). 
+
+First, **Toronto**(*an object of sf class*) is an example data, which stands for Toronto, ON. This contains neighborhood deprivation indices(the Canadian Index of Multiple Deprivation and Pampalon index) and the census variable(the percentage of households who commute within the census subdivision of residence) for 2016. 
 
 ```{r}
 library(SSIMmap)
 library(sf)
 library(terra)
-shape<- SSIMmap::Toronto
-plot(shape, border=NA)
-img1<-terra::rast(system.file("ex","groups2nm.tif", package = "SSIMmap", mustWork = TRUE))
-img2<-terra::rast(system.file("ex","single2nm.tif", package = "SSIMmap", mustWork = TRUE))
-plot(img1)
-plot(img2)
+Toronto<- SSIMmap::Toronto
+plot(Toronto, border=NA)
 ```
 
-## Functions: ssim_bandwidth
+The second and third data are *terra raster objects*. These raster objects represent the geographical location from 38 to 41◦N and 0.5–5◦E, centering on the islands of Ibiza, Mallorca and Menorca. The raster objects, labeled as 'groups2nm' and 'single2nm',  contain information on sperm whales. They represent the predicted probability of presence for groups and singletons at a spatial resolution of 2 nautical miles(NM) on a regular grid. For further information about 'groups2nm' and 'single2nm' please refer to the paper ["Novel application of a quantitative spatial comparison tool to species distribution data"](https://www.sciencedirect.com/science/article/pii/S1470160X16302990)
+
+```{r}
+single<-SSIMmap::whale_single
+group<-SSIMmap::whale_group
+plot(single)
+plot(group)
+```
+
+# Functions: ssim_bandwidth
 
 This function calculates the bandwidth size for the computation of the Structural Similarity Index (SSIM) on polygon maps. A user can decide whether or not to standardize the variables of maps. If the maps have different ranges of variables or include negative values, it is necessary to use **standardize =TRUE**. This ensures that the conditions for SSIM(symmetry and boundedness (a range from -1 to 1)) are not violated. If the maps share a similar range, there is no need to use **standardize= TRUE**.The function provides two options for selecting the bandwidth size, which will be displayed in the console window:
 
@@ -46,15 +55,15 @@ The function takes as input an object of  *sf* class, which includes columns nec
 args(ssim_bandwidth)
 ```
 
-### How to execute
+## How to execute
 
 ```{r}
-#ssim_bandwidth(shape,"CIMD_SDD","PP_SDD",max_bandwidth= 200)
-#ssim_bandwidth(shape,"CIMD_SDD","P_commute",max_bandwidth= 200)
+# ssim_bandwidth(Toronto,"CIMD_SDD","PP_SDD",max_bandwidth= 200)
+# ssim_bandwidth(Toronto,"CIMD_SDD","P_commute",max_bandwidth= 200)
 
 ```
 
-## Functions: ssim_constant
+# Functions: ssim_constant
 
 This function calculates constants (k1 and k2) for the computation of the SSIM on polygon maps based on the ranges of values. It considers a range of an object of *sf* class including columns for the SSIM calculation and returns the rescaled constants on the console window.
 
@@ -62,13 +71,13 @@ This function calculates constants (k1 and k2) for the computation of the SSIM o
 args(ssim_constant)
 ```
 
-### How to execute
+## How to execute
 
 ```{r}
-ssim_constant(shape,"CIMD_SDD","PP_SDD")
+ssim_constant(Toronto,"CIMD_SDD","PP_SDD")
 ```
 
-## Functions: ssim_polygon
+# Functions: ssim_polygon
 
 This function calculates the SSIM index for a given polygon. It takes an object of the *sf* class as input, which includes the necessary columns for SSIM calculation. The function then returns either the global SSIM values (global = TRUE) or the local SSIM values for each given polygon (global = FALSE). By default, the bandwidth size is determined by the square root of N. A user has the flexibility to select their own bandwidth size or use the suggestions from the *ssim_bandwidth* function. 
 
@@ -76,7 +85,7 @@ This function calculates the SSIM index for a given polygon. It takes an object 
 args(ssim_polygon)
 ```
 
-### How to execute
+## How to execute
 
 ```{r}
 ssim_polygon(Toronto,"CIMD_SDD","PP_SDD") 
@@ -88,7 +97,7 @@ plot(df,border=NA)
 plot(df_2,border=NA)
 ```
 
-## Functions: ssim_raster
+# Functions: ssim_raster
 
 This function calculates the SSIM index for raster images. It takes as input a image file importing from the [*terra*](https://cran.r-project.org/web/packages/terra/index.html) and returns either the global SSIM values (global=TRUE) or the SSIM values for each given cell as the local SSIM (global=FALSE). Default of the window size is 3\*3 and a user can use own window size.
 
@@ -96,15 +105,15 @@ This function calculates the SSIM index for raster images. It takes as input a i
 args(ssim_raster)
 ```
 
-### How to execute
+## How to execute
 
 ```{r}
-ssim_raster(img1,img2)
-result_raster<-ssim_raster(img1,img2,global = FALSE)
+ssim_raster(single,group)
+result_raster<-ssim_raster(single,group,global = FALSE)
 plot(result_raster)
 ```
 
-### Example of visualizing the SSIM for irregular lattice maps using ggplot2
+# Example of visualization: the local SSIM for irregular lattice maps using ggplot2
 
 ```{r, warning = FALSE, fig.show = "hold", out.width = "45%"}
 library(ggplot2)
@@ -138,7 +147,7 @@ ggplot() +
 
 ```
 
-### Reference
+# Reference
 
 -   Brunsdon, C., Fotheringham, A.S. and Charlton, M. (2002). Geographically weighted summary statistics---a framework for localised exploratory data analysis. *Computers, Environment and Urban Systems*, 26(6), pp.501-524. <https://doi.org/10.1016/S0198-9715(01)00009-6>
 -   Jones, E.L., Rendell, L., Pirotta, E. and Long, J.A. (2016). Novel application of a quantitative spatial comparison tool to species distribution data. *Ecological Indicators*, 70, pp.67-76. <https://doi.org/10.1016/j.ecolind.2016.05.051>

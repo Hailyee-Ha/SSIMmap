@@ -37,6 +37,4 @@ img1<-terra::rast(image_path1)
 img2<-terra::rast(image_path2)
 ssim_raster(img1,img2)
 result_raster<-ssim_raster(img1,img2,global=FALSE)
-library(rasterVis)
-levelplot(result_raster)
 }

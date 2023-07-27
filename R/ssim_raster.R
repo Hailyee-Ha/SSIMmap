@@ -21,7 +21,6 @@
 #' img2<-terra::rast(image_path2)
 #' ssim_raster(img1,img2)
 #' result_raster<-ssim_raster(img1,img2,global=FALSE)
-#' plot(result_raster)
 #' @export ssim_raster
 
 
