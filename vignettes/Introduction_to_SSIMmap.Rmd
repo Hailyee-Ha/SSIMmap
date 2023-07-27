@@ -27,17 +27,18 @@ First, **Toronto**(*an object of sf class*) is an example data, which stands for
 library(SSIMmap)
 library(sf)
 library(terra)
-Toronto<- SSIMmap::Toronto
+data("Toronto")
 plot(Toronto, border=NA)
 ```
 
 The second and third data are *terra raster objects*. These raster objects represent the geographical location from 38 to 41◦N and 0.5–5◦E, centering on the islands of Ibiza, Mallorca and Menorca. The raster objects, labeled as 'groups2nm' and 'single2nm',  contain information on sperm whales. They represent the predicted probability of presence for groups and singletons at a spatial resolution of 2 nautical miles(NM) on a regular grid. For further information about 'groups2nm' and 'single2nm' please refer to the paper ["Novel application of a quantitative spatial comparison tool to species distribution data"](https://www.sciencedirect.com/science/article/pii/S1470160X16302990)
 
 ```{r}
-single<-SSIMmap::whale_single
-group<-SSIMmap::whale_group
-plot(single)
-plot(group)
+data("whale_group")
+data("whale_single")
+
+plot(whale_group)
+plot(whale_single)
 ```
 
 # Functions: ssim_bandwidth
