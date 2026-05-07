@@ -2,39 +2,132 @@
 % Please edit documentation in R/ssim_raster.R
 \name{ssim_raster}
 \alias{ssim_raster}
-\title{Calculate SSIM index for raster images}
+\title{SSIM index for raster images}
 \usage{
-ssim_raster(img1, img2, global = TRUE, w = 3, k1 = NULL, k2 = NULL)
+ssim_raster(
+  map1,
+  map2,
+  global = TRUE,
+  w = 1,
+  transform = c("normal_score", "percentile", "none", "minmax"),
+  k1 = NULL,
+  k2 = NULL,
+  do_test = FALSE,
+  local_test = FALSE,
+  R = 1000,
+  fdr = TRUE,
+  alpha = 0.05,
+  seed = NULL
+)
 }
 \arguments{
-\item{img1}{Raster object representing the first image.}
+\item{map1}{A single-layer \code{terra::SpatRaster} object representing the first raster map.}
 
-\item{img2}{Raster object representing the second image.}
+\item{map2}{A single-layer \code{terra::SpatRaster} object representing the second raster map.}
 
-\item{global}{If global is True, returning the global average of SSIM, SIM, SIV, and SIP. If the option is FALSE, a a \code{raster} raster brick containing the SSIM, SIM, SIV, and SIP for each cell is returned
-Default is TRUE}
+\item{global}{Logical. If \code{TRUE}, the function returns global summary
+statistics of SSIM, SIM, SIV, and SIP. If \code{FALSE}, it returns local
+raster layers for each cell. Default is \code{TRUE}.}
 
-\item{w}{Integer specifying the window size for the local neighborhood. Default is 3.}
+\item{w}{Integer. Radius of the local moving window used to calculate local
+SSIM components. For example, \code{w = 1} uses a 3 x 3 window, and
+\code{w = 2} uses a 5 x 5 window. Default is \code{1}.}
 
-\item{k1}{the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.}
+\item{transform}{Character. Transformation applied to both raster maps before
+SSIM calculation. Options are \code{"normal_score"}, \code{"percentile"},
+\code{"none"}, and \code{"minmax"}. Default is \code{"normal_score"}.}
 
-\item{k2}{the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.}
+\item{k1}{Numeric. Constant used to stabilize the luminance component of SSIM.
+If \code{NULL}, the default value \code{0.01} is used.}
+
+\item{k2}{Numeric. Constant used to stabilize the contrast and structure
+components of SSIM. If \code{NULL}, the default value \code{0.03} is used.}
+
+\item{do_test}{Logical. If \code{TRUE}, a permutation-based statistical test
+is performed. Default is \code{FALSE}.}
+
+\item{local_test}{Logical. If \code{TRUE} and \code{global = FALSE}, local
+permutation tests are performed for each raster cell. If \code{FALSE},
+local SSIM layers are returned without p-values. Default is \code{FALSE}.}
+
+\item{R}{Integer. Number of permutations used for statistical inference.
+Default is \code{1000}.}
+
+\item{fdr}{Logical. If \code{TRUE}, p-values are adjusted using the
+Benjamini-Hochberg false discovery rate correction. Default is \code{TRUE}.}
+
+\item{alpha}{Numeric. Significance level used to determine significant SSIM
+values. Default is \code{0.05}.}
+
+\item{seed}{Optional integer. Random seed used for permutation testing.
+Default is \code{NULL}.}
 }
 \value{
-If global is True, returning the global average of SSIM, SIM, SIV, and SIP. If the option is FALSE, a \code{raster} raster brick containing the SSIM, SIM, SIV, and SIP for each cell is returned
+If \code{global = TRUE} and \code{do_test = FALSE}, a list containing a summary
+table of global SSIM, SIM, SIV, and SIP values is returned.
+
+If \code{global = TRUE} and \code{do_test = TRUE}, a list containing the
+summary table, permutation null distributions, p-values, and optionally
+q-values is returned.
+
+If \code{global = FALSE} and \code{do_test = FALSE}, a
+\code{terra::SpatRaster} object with four layers is returned:
+\code{SSIM}, \code{SIM}, \code{SIV}, and \code{SIP}.
+
+If \code{global = FALSE}, \code{do_test = TRUE}, and
+\code{local_test = TRUE}, a \code{terra::SpatRaster} object is returned with
+local SSIM component layers, p-value layers, optionally q-value layers, and
+significance layers.
 }
 \description{
-This function calculates the SSIM, a measure of similarity between two raster images
+This function calculates the Structural Similarity Index Measure (SSIM)
+between two raster images. It can return either global SSIM summaries or
+local SSIM raster layers. Optional permutation-based statistical inference
+can also be performed for global or local SSIM values.
 }
 \details{
-This function computes the SSIM index for two raster images.
+The SSIM index is calculated as the product of three components:
+similarity in mean intensity, similarity in variance, and similarity in
+spatial pattern. These components are returned as \code{SIM}, \code{SIV}, and
+\code{SIP}, respectively.
+
+The local SSIM calculation uses a square moving window with size
+\code{(2 * w + 1) x (2 * w + 1)}.
+
+When \code{do_test = TRUE}, permutation testing is performed by randomly
+permuting the values of \code{map2} over the overlapping non-\code{NA} cells
+and recalculating SSIM values.
 }
 \examples{
+\dontrun{
+library(terra)
 
-image_path1 <- system.file("ex","groups2nm.tif", package = "SSIMmap", mustWork = TRUE)
-image_path2 <- system.file("ex","single2nm.tif", package = "SSIMmap", mustWork = TRUE)
-img1<-terra::rast(image_path1)
-img2<-terra::rast(image_path2)
-ssim_raster(img1,img2)
-result_raster<-ssim_raster(img1,img2,global=FALSE)
+# Global SSIM summary
+g1 <- ssim_raster(
+  map1,
+  map2,
+  global = TRUE,
+  w = 1
+)
+
+# Local SSIM raster layers
+l1 <- ssim_raster(
+  map1,
+  map2,
+  global = FALSE,
+  w = 1
+)
+
+# Local SSIM with permutation test
+l2 <- ssim_raster(
+  map1,
+  map2,
+  global = FALSE,
+  w = 1,
+  do_test = TRUE,
+  local_test = TRUE,
+  R = 999
+)
+}
+
 }

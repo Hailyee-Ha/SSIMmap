@@ -2,60 +2,99 @@
 % Please edit documentation in R/ssim_polygon.R
 \name{ssim_polygon}
 \alias{ssim_polygon}
-\title{Calculate the structural similarity index measure for polygon maps.}
+\title{Structural similarity index (SSIM) for polygon maps}
 \usage{
 ssim_polygon(
   shape,
   map1,
   map2,
-  standardize = TRUE,
+  global = TRUE,
   bandwidth = NULL,
+  transform = c("normal_score", "percentile", "none", "minmax"),
   k1 = NULL,
   k2 = NULL,
-  global = TRUE
+  do_test = FALSE,
+  R = 1000,
+  fdr = TRUE,
+  alpha = 0.05,
+  seed = NULL
 )
 }
 \arguments{
-\item{shape}{a a \code{sf} polygon containing the polygon data with attributes that can create polygon-based maps}
+\item{shape}{An \code{sf} polygon object.}
 
-\item{map1}{the name of the first map to compare as a column in the shape}
+\item{map1}{Character string; column name in \code{shape} for the first map.}
 
-\item{map2}{the name of the second map to compare as a column in the shape}
+\item{map2}{Character string; column name in \code{shape} for the second map.}
 
-\item{standardize}{If TRUE, standardize the variables before computing the SSIM. Default is TRUE.}
+\item{global}{Logical. If \code{TRUE}, compute and print a summary table of
+global SSIM, SIM, SIV, SIP. If \code{FALSE}, return an \code{sf} object
+with local metrics (and local p-/q-values if \code{do_test = TRUE}).}
 
-\item{bandwidth}{bandwidth for the Gaussian kernel weighting used in the SSIM calculation. Default is the square root of N}
+\item{bandwidth}{Integer; adaptive k-NN size (number of neighbours). The
+default is \code{ceiling(sqrt(n))}, where \code{n} is the number of
+polygons. Must be at least 3 and not exceed \code{n}.}
 
-\item{k1}{the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.}
+\item{transform}{One of \code{c("normal_score", "percentile", "none", "minmax")}.
+\code{"normal_score"} applies a Blom normal scores transform;
+\code{"percentile"} maps values to empirical percentiles in (0, 1);
+\code{"minmax"} applies min–max normalisation to [0, 1]; and
+\code{"none"} leaves the variables on their original scale.}
 
-\item{k2}{the constant used in the SSIM calculation. Default is NULL, in which case it is computed from the maximum value of variables.}
+\item{k1, k2}{SSIM constants. If \code{NULL}, defaults are \code{k1 = 0.01},
+\code{k2 = 0.03}.}
 
-\item{global}{If global is True, returning the global average of SSIM, SIM, SIV, and SIP. If the option is FALSE, a a \code{sf} SpatialPolygonsDataFrame containing the SSIM, SIM, SIV, and SIP for each polygon is returned
-Default is TRUE}
+\item{do_test}{Logical; if \code{TRUE}, perform permutation tests for global
+and local SSIM. Local p-values can be FDR-adjusted if \code{fdr = TRUE}.}
+
+\item{R}{Integer; number of permutations for the significance tests
+(default \code{R = 1000}).}
+
+\item{fdr}{Logical; if \code{TRUE} (default), apply Benjamini–Hochberg
+FDR correction to local p-values.}
+
+\item{alpha}{Numeric; significance threshold for local results (default
+\code{0.05}). Local features with \code{q_value < alpha} are flagged as
+significant.}
+
+\item{seed}{Optional integer; random seed for reproducibility of the
+permutation tests.}
 }
 \value{
-If global is TRUE, a string containing the global average SSIM, SIM, SIV, and SIP.
-If global is FALSE, a \code{sf} polygon containing the SSIM, SIM, SIV, and SIP for each polygon.
+If \code{global = TRUE} and \code{do_test = FALSE}, the function prints a
+  knitr table summarising the global mean, minimum, maximum, and standard
+  deviation of SSIM, SIM, SIV, and SIP, and returns this \code{data.frame}
+  (invisibly).
+
+  If \code{global = TRUE} and \code{do_test = TRUE}, the function prints the
+  same summary table plus a table of global permutation p-values (two-sided)
+  for SSIM, SIM, SIV, and SIP, and returns (invisibly) a \code{list} with
+  components:
+  \itemize{
+    \item \code{summary}: \code{data.frame} with global SSIM/SIM/SIV/SIP
+      summary statistics;
+    \item \code{p_global}: \code{data.frame} with global means and
+      permutation p-values for SSIM, SIM, SIV, SIP.
+  }
+
+  If \code{global = FALSE}, the function returns an \code{sf} object equal to
+  \code{shape} with additional columns:
+  \itemize{
+    \item \code{SSIM}, \code{SIM}, \code{SIV}, \code{SIP}: local similarity
+      metrics for each polygon;
+    \item \code{p_value}, \code{q_value}, \code{sig} (only if
+      \code{do_test = TRUE}): local permutation p-value, FDR-adjusted q-value,
+      and a logical flag indicating significance \code{(q_value < alpha)}.
+  }
 }
 \description{
-This function computes the SSIM, a measure of similarity between two polygon maps.
-The ssim_polygon function computes the SSIM for each polygon and can be returned as a global average or for each polygon as a \code{sf} object
-}
-\details{
-This function computes the SSIM index for two polygon maps.
-}
-\examples{
-# Load example sf object Toronto Area with attributes for maps:
-# Pampalon Index,CIMD Index,
-# and percentage of household commuting within the same Census Sub Division of residence
-shape<-SSIMmap::Toronto
-
-# Mapping two attributes
-plot(shape$CIMD_SDD)
-plot(shape$PP_SDD)
-# Finding global ssim
-
-ssim_polygon(shape,"CIMD_SDD","PP_SDD")
-# Finding local ssim
-df<-ssim_polygon(shape,"CIMD_SDD","PP_SDD",global=FALSE)
+Computes local and global SSIM (and its components SIM, SIV, SIP) for two
+polygon maps using an adaptive k-nearest-neighbour (k-NN) Gaussian kernel.
+Input variables can be optionally transformed (e.g. rank-based inverse
+normal scores or min–max normalization). 
+Optionally performs permutation tests for global and local significance with BH-FDR correction.
+Under the null hypothesis for the permutation test, both variables are
+randomly permuted at each iteration, breaking spatial structure and
+association between them. Local p-values can be optionally adjusted using
+the Benjamini–Hochberg FDR procedure.
 }

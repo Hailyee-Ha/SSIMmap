@@ -1,3 +1,8 @@
 ^SSIMmap\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
+^CRAN-SUBMISSION$
+^data-raw$
+^\.positai$
+^\.claude$
+^cran-comments\.md$

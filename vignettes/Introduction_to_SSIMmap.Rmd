@@ -6,151 +6,395 @@ vignette: >
   %\VignetteIndexEntry{Introduction to SSIMmap}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
- 
 ---
 
-The goal of the *SSIMmap* package  extend [the classical SSIM method](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=1284395) for irregular lattice-based maps and raster images.The original SSIM method was developed to compare two image mimicking the human visual system. The *SSIMmap* package applies this method to two types of maps (polygon and raster). The geographical SSIM method incorporates well-developed [geographically weighted summary statistics](https://www.sciencedirect.com/science/article/pii/S0198971501000096?via%3Dihub) with an adaptive bandwidth kernel function for irregular lattice-based maps. This package includes four key functions: **ssim_bandwidth**, **ssim_constant**, **ssim_polygon**,**ssim_raster**. Users who want to compare two maps and quantify their similarities can utilize this package and visualize the results using other R packages (e.g.,[*tmap*](https://cran.r-project.org/web/packages/tmap/index.html) and [*ggplot*](https://cran.r-project.org/web/packages/ggplot2/index.html)).
+The goal of the *SSIMmap* package is to extend [the classical SSIM method](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=1284395) to irregular lattice-based maps and raster images. The original SSIM method was developed to compare two images by mimicking the human visual system. The *SSIMmap* package applies this method to two types of maps (polygon and raster). For irregular lattice-based maps, the geographical SSIM method incorporates [geographically weighted summary statistics](https://www.sciencedirect.com/science/article/pii/S0198971501000096?via%3Dihub) with an adaptive k-nearest-neighbour (k-NN) Gaussian kernel.
 
+This package includes three key functions: **`ssim_bandwidth`**, **`ssim_polygon`**, and **`ssim_raster`**. In addition to point estimates of SSIM and its components (SIM, SIV, SIP), the polygon and raster functions also support **permutation tests** for global and local significance, with optional Benjamini–Hochberg FDR correction for local p-values.
+
+Users who want to compare two maps and quantify their similarities can use this package and visualize the results with other R packages (e.g., [*tmap*](https://CRAN.R-project.org/package=tmap), [*ggplot2*](https://CRAN.R-project.org/package=ggplot2), [*patchwork*](https://CRAN.R-project.org/package=patchwork), and [*tidyterra*](https://CRAN.R-project.org/package=tidyterra)).
 
 ```{r setup, echo = FALSE}
 suppressPackageStartupMessages(library(SSIMmap))
 knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
 ```
 
-# Data: polygon, groups2nm.tif, and single2nm.tif
+## Example data
 
-The package has three example data: 1) Toronto, 2) groups2nm (*terra raster object*), and 3) single2nm (*terra raster object*). 
+The package ships with the following example data sets:
 
-First, **Toronto**(*an object of sf class*) is an example data, which stands for Toronto, ON. This contains neighborhood deprivation indices(the Canadian Index of Multiple Deprivation and Pampalon index) and the census variable(the percentage of households who commute within the census subdivision of residence) for 2016. 
+1. **`Toronto_SSIM`** — an `sf` polygon object for Toronto, ON, containing two neighbourhood deprivation indices (the Canadian Index of Multiple Deprivation, `CIMD`, and the Pampalon index, `PP`) and a census variable (`Commute`: percentage of households commuting within the census subdivision of residence) for 2016.
 
-```{r}
+2. **Daily Canadian Fire Weather Index (FWI) maps for British Columbia (BC)** — three packed `terra` raster objects at a 2 km spatial resolution, derived from the Canadian Forest Fire Weather Index System. FWI is a numeric rating that is driven by meteorological inputs such as temperature, wind speed, humidity and precipitation, and typically ranges from near 0 (minimal fire danger) to values exceeding 100 (extreme fire-weather conditions).
+
+   The three dates were chosen to represent contrasting fire-weather conditions:
+   
+   - `fwi_0816_bc` — 16 August 2023 (peak summer fire season)
+   - `fwi_0818_bc` — 18 August 2023 (peak summer fire season)
+   - `fwi_1101_bc` — 1 November 2023 (late fall)
+   
+   Two days within the summer season are expected to be highly similar in space, whereas a summer–fall comparison should show much lower spatial similarity, because fall conditions in western Canada are typically cooler and wetter, with reduced fire danger across most of the province.
+
+   Because `terra` raster objects rely on external pointers, the FWI rasters are stored as `PackedSpatRaster` objects (created with `terra::wrap()`) and need to be converted back to `SpatRaster` with `terra::unwrap()` before use.
+
+```{r, message = FALSE}
 library(SSIMmap)
 library(sf)
 library(terra)
-data("Toronto")
-plot(Toronto, border=NA)
+library(ggplot2)
+library(patchwork)
+library(tidyterra)
+
+# Polygon data
+data("Toronto_SSIM")
+plot(Toronto_SSIM["CIMD"], border = NA, main = "CIMD")
+
+# Raster data (FWI for British Columbia)
+# Stored as PackedSpatRaster — unwrap to SpatRaster for use with terra
+data("fwi_0816_bc"); fwi_0816_bc <- terra::unwrap(fwi_0816_bc)
+data("fwi_0818_bc"); fwi_0818_bc <- terra::unwrap(fwi_0818_bc)
+data("fwi_1101_bc"); fwi_1101_bc <- terra::unwrap(fwi_1101_bc)
+
+plot(fwi_0816_bc, main = "FWI – 16 August 2023")
+plot(fwi_0818_bc, main = "FWI – 18 August 2023")
+plot(fwi_1101_bc, main = "FWI – 1 November 2023")
 ```
 
-The second and third data are *terra raster objects*. These raster objects represent the geographical location from 38 to 41◦N and 0.5–5◦E, centering on the islands of Ibiza, Mallorca and Menorca. The raster objects, labeled as 'groups2nm' and 'single2nm',  contain information on sperm whales. They represent the predicted probability of presence for groups and singletons at a spatial resolution of 2 nautical miles(NM) on a regular grid. For further information about 'groups2nm' and 'single2nm' please refer to the paper ["Novel application of a quantitative spatial comparison tool to species distribution data"](https://www.sciencedirect.com/science/article/pii/S1470160X16302990)
+## Function: `ssim_bandwidth`
 
-```{r}
-data("whale_group")
-data("whale_single")
+`ssim_bandwidth()` selects a bandwidth (number of nearest neighbours, *k*) for the adaptive k-NN Gaussian kernel used in `ssim_polygon()`, by computing **bias–variance trade-off curves** for each of the two input variables. Note that this function does *not* compute SSIM itself; it is a helper for choosing a suitable bandwidth.
 
-plot(whale_group)
-plot(whale_single)
-```
+Key arguments:
 
-# Functions: ssim_bandwidth
+- `shape`: an `sf` polygon object.
+- `map1`, `map2`: column names in `shape` for the two variables.
+- `max_bandwidth`: upper bound of *k* (must be $\geq 12$ and not exceed the number of polygons).
+- `transform`: one of `"normal_score"` (Blom normal scores), `"percentile"` (empirical percentiles), `"none"`, or `"minmax"` (min–max normalization to [0, 1]). Use a transformation when the two variables have very different scales or units.
+- `option`: how to choose a single bandwidth from the suggested range — `"midpoint"` (default), `"lower"`, or `"upper"`.
 
-This function calculates the bandwidth size for the computation of the Structural Similarity Index (SSIM) on polygon maps. A user can decide whether or not to standardize the variables of maps. If the maps have different ranges of variables or include negative values, it is necessary to use **standardize =TRUE**. This ensures that the conditions for SSIM(symmetry and boundedness (a range from -1 to 1)) are not violated. If the maps share a similar range, there is no need to use **standardize= TRUE**.The function provides two options for selecting the bandwidth size, which will be displayed in the console window:
+The function returns a list with three elements:
 
-1) The square root of N.
-2) The trade-off between the bias and variance of the two maps.
-
-The first method for the bandwidth selection calculates the square root of the sample size n, which is based on the relative rate of convergence that could minimize the mean integrated squared error([Abramson,1982](https://www.jstor.org/stable/2240724)). The second method aims to balance local variances and bias in spatial data (geographically weighted mean), with an intent to minimize the difference between them. The primary goal of this method is to find a bandwidth size that balances the bias-variance trade-off and therefore effectively captures the scale of the underlying spatial structure. More information about the bias-variance trade-off can be found in the paper ["On the measurement ofbias in geographically weighted regression models"](https://www.sciencedirect.com/science/article/pii/S2211675320300476). By default for the second method,the function chooses the mid-point of the optimal trade-off between the bias and variance for map1 and map2. A user can choose the upper (the larger one) or the lower (the smaller one) value between the two of the optimal trade-off between the bias and variance
-
-The function takes as input an object of  *sf* class, which includes columns necessary for SSIM calculation. It outputs two possible selections for the bandwidth size based on the selected method. Additionally, the function generates a plot illustrating the relationship between bias, variance, and bandwidth size with a vertical line of the square root of N result.
+- `plot`: a `ggplot` object showing standardized bias (solid line) and variance (dashed line) against bandwidth, with the suggested range highlighted.
+- `bandwidth`: the chosen bandwidth `k_star`.
+- `tradeoff`: the underlying trade-off data and `sqrt(n)` as a reference.
 
 ```{r}
 args(ssim_bandwidth)
 ```
 
-## How to execute
+### How to execute
 
-```{r}
-# ssim_bandwidth(Toronto,"CIMD_SDD","PP_SDD",max_bandwidth= 200)
-# ssim_bandwidth(Toronto,"CIMD_SDD","P_commute",max_bandwidth= 200)
-
+```{r, fig.width = 6, fig.height = 4}
+S1 <- ssim_bandwidth(
+  shape         = Toronto_SSIM,
+  map1          = "CIMD",
+  map2          = "PP",
+  max_bandwidth = 100,
+  transform     = "percentile",
+  option        = "midpoint"
+)
+S1$bandwidth
+S1$plot
 ```
 
-# Functions: ssim_constant
-
-This function calculates constants (k1 and k2) for the computation of the SSIM on polygon maps based on the ranges of values. It considers a range of an object of *sf* class including columns for the SSIM calculation and returns the rescaled constants on the console window.
-
-```{r}
-args(ssim_constant)
+```{r, fig.width = 6, fig.height = 4}
+S2 <- ssim_bandwidth(
+  shape         = Toronto_SSIM,
+  map1          = "CIMD",
+  map2          = "Commute",
+  max_bandwidth = 100,
+  transform     = "percentile",
+  option        = "midpoint"
+)
+S2$bandwidth
+S2$plot
 ```
 
-## How to execute
+### Combining two bandwidth plots with `patchwork`
 
-```{r}
-ssim_constant(Toronto,"CIMD_SDD","PP_SDD")
+When comparing several pairs of maps, you can place the trade-off plots side-by-side using **`patchwork`**:
+
+```{r, fig.width = 10, fig.height = 5}
+# Tag each panel and remove individual captions
+p1 <- S1$plot +
+  labs(tag = "a", caption = NULL) +
+  theme(plot.tag = element_text(face = "bold", size = 14))
+
+p2 <- S2$plot +
+  labs(tag = "b", caption = NULL) +
+  theme(plot.tag = element_text(face = "bold", size = 14))
+
+# Combine side-by-side with a shared legend at the bottom
+combined_bandwidth_plot <- (p1 + p2) +
+  plot_layout(guides = "collect") &
+  theme(legend.position = "bottom")
+
+# Add a single global caption
+combined_bandwidth_plot +
+  plot_annotation(
+    caption = "* Solid line: Bias / Dashed line: Variance",
+    theme   = theme(plot.caption = element_text(size = 10, hjust = 0.5))
+  )
 ```
 
-# Functions: ssim_polygon
+## Function: `ssim_polygon`
 
-This function calculates the SSIM index for a given polygon. It takes an object of the *sf* class as input, which includes the necessary columns for SSIM calculation. The function then returns either the global SSIM values (global = TRUE) or the local SSIM values for each given polygon (global = FALSE). By default, the bandwidth size is determined by the square root of N. A user has the flexibility to select their own bandwidth size or use the suggestions from the *ssim_bandwidth* function. 
+`ssim_polygon()` computes SSIM and its components (`SIM`, `SIV`, `SIP`) for two numeric variables stored in a polygon `sf` object. Local statistics are calculated using an adaptive k-nearest-neighbour Gaussian kernel based on polygon centroids. The number of neighbours is controlled by `bandwidth`; if `bandwidth = NULL`, the default is `ceiling(sqrt(n))`, where `n` is the number of polygons.
+
+Depending on the arguments, the function can return:
+
+- a **global summary table** for `SSIM`, `SIM`, `SIV`, and `SIP`
+  when `global = TRUE`, or
+- an **`sf` object with local `SSIM`, `SIM`, `SIV`, and `SIP` values**
+  for each polygon when `global = FALSE`.
+
+The argument `transform` controls preprocessing of the two input variables. Available options are `"normal_score"`, `"percentile"`, `"minmax"`, and `"none"`.
+
+When `do_test = TRUE`, the function performs permutation-based inference:
+
+- **Global test** (`global = TRUE`): returns two-sided permutation p-values
+  for global `SSIM`, `SIM`, `SIV`, and `SIP`.
+- **Local test** (`global = FALSE`): returns per-polygon SSIM p-values in
+  `p_value`. If `fdr = TRUE`, Benjamini-Hochberg FDR-adjusted values are
+  returned in `q_value`; otherwise, `q_value` is equal to `p_value`. The logical
+  column `sig` flags polygons with `q_value < alpha`.
+
+Under the null hypothesis, both variables are randomly permuted at each iteration, breaking both spatial structure and association between the two,variables.
 
 ```{r}
 args(ssim_polygon)
 ```
 
-## How to execute
+### Global SSIM with permutation test
 
 ```{r}
-ssim_polygon(Toronto,"CIMD_SDD","PP_SDD") 
-ssim_polygon(Toronto,"CIMD_SDD","P_commute") 
-df<-ssim_polygon(Toronto,"CIMD_SDD","PP_SDD",global = FALSE)
-df_2<-ssim_polygon(Toronto,"CIMD_SDD","P_commute",global = FALSE) 
+S1_global <- ssim_polygon(
+  shape     = Toronto_SSIM,
+  map1      = "CIMD",
+  map2      = "PP",
+  global    = TRUE,
+  bandwidth = 87,
+  transform = "percentile",
+  k1 = NULL, k2 = NULL,
+  do_test = TRUE, R = 1000, fdr = TRUE, alpha = 0.05,
+  seed = 1
+)
 
-plot(df,border=NA)
-plot(df_2,border=NA)
+# Global means and permutation p-values
+S1_global$p_global
 ```
 
-# Functions: ssim_raster
+```{r}
+S2_global <- ssim_polygon(
+  shape     = Toronto_SSIM,
+  map1      = "CIMD",
+  map2      = "Commute",
+  global    = TRUE,
+  bandwidth = 91,
+  transform = "percentile",
+  do_test = TRUE, R = 1000, fdr = TRUE, alpha = 0.05,
+  seed = 1
+)
+S2_global$p_global
+```
 
-This function calculates the SSIM index for raster images. It takes as input a image file importing from the [*terra*](https://cran.r-project.org/web/packages/terra/index.html) and returns either the global SSIM values (global=TRUE) or the SSIM values for each given cell as the local SSIM (global=FALSE). Default of the window size is 3\*3 and a user can use own window size.
+### Local SSIM with permutation test and FDR correction
+
+When `global = FALSE`, the function returns an `sf` object that can be passed directly to mapping packages such as `ggplot2` or `tmap`.
+
+```{r}
+S1_local <- ssim_polygon(
+  shape     = Toronto_SSIM,
+  map1      = "CIMD",
+  map2      = "PP",
+  global    = FALSE,
+  bandwidth = 87,
+  transform = "percentile",
+  do_test = TRUE, R = 1000, fdr = TRUE, alpha = 0.05,
+  seed = 1
+)
+head(S1_local[, c("SSIM", "SIM", "SIV", "SIP", "p_value", "q_value", "sig")])
+```
+
+```{r}
+S2_local <- ssim_polygon(
+  shape     = Toronto_SSIM,
+  map1      = "CIMD",
+  map2      = "Commute",
+  global    = FALSE,
+  bandwidth = 91,
+  transform = "percentile",
+  do_test = TRUE, R = 1000, fdr = TRUE, alpha = 0.05,
+  seed = 1
+)
+```
+
+### Visualizing local SSIM with `ggplot2`
+
+```{r, fig.show = "hold", out.width = "45%"}
+library(RColorBrewer)
+
+# CIMD vs. Pampalon
+ggplot() +
+  geom_sf(data = S1_local, aes(fill = SSIM), color = NA) +
+  scale_fill_gradientn(colors = brewer.pal(8, "PRGn"), limits = c(-1, 1)) +
+  theme_void()
+
+# CIMD vs. Commute
+ggplot() +
+  geom_sf(data = S2_local, aes(fill = SSIM), color = NA) +
+  scale_fill_gradientn(colors = brewer.pal(8, "PRGn"), limits = c(-1, 1)) +
+  theme_void()
+```
+
+You can also overlay FDR-significant polygons (`sig = TRUE`) on top of the local SSIM map by adding a separate layer with `geom_sf(data = subset(S1_local, sig), ...)`.
+
+## Function: `ssim_raster`
+
+`ssim_raster()` computes the Structural Similarity Index Measure (SSIM) between two raster images. It also returns the three SSIM components: `SIM`, `SIV`, and `SIP`.
+
+The function uses a moving window of size $(2w + 1) \times (2w + 1)$.For example, the default `w = 1` uses a `3 x 3` window. Inputs must be single-layer `terra::SpatRaster` objects with the same geometry.
+
+- If `global = TRUE`, the function returns a list containing a global summary table for `SSIM`, `SIM`, `SIV`, and `SIP`.
+- If `global = FALSE`, the function returns a multi-layer `terra::SpatRaster` with per-cell `SSIM`, `SIM`, `SIV`, and `SIP`.
+
+The argument `transform` controls the preprocessing applied to both raster maps before SSIM calculation. Available options are `"normal_score"`,
+`"percentile"`, `"minmax"`, and `"none"`.
+
+When `do_test = TRUE`, permutation-based statistical inference is performed.
+
+- If `global = TRUE`, the function returns global p-values and, when
+  `fdr = TRUE`, FDR-adjusted q-values.
+- If `global = FALSE` and `local_test = TRUE`, the function returns local
+  p-value layers (`SSIM_p`, `SIM_p`, `SIV_p`, `SIP_p`), FDR-adjusted q-value
+  layers (`SSIM_q`, `SIM_q`, `SIV_q`, `SIP_q`) when `fdr = TRUE`, and
+  significance layers (`SSIM_sig`, `SIM_sig`, `SIV_sig`, `SIP_sig`).
 
 ```{r}
 args(ssim_raster)
 ```
 
-## How to execute
+### Global SSIM
+
+A quick global comparison between the two summer FWI maps (16 vs. 18 August 2023) and between summer and fall (16 August vs. 1 November 2023):
 
 ```{r}
-ssim_raster(single,group)
-result_raster<-ssim_raster(single,group,global = FALSE)
-plot(result_raster)
+ssim_raster(fwi_0816_bc, fwi_0818_bc)   # summer vs summer (high similarity expected)
+ssim_raster(fwi_0816_bc, fwi_1101_bc)   # summer vs fall   (lower similarity expected)
 ```
 
-# Example of visualization: the local SSIM for irregular lattice maps using ggplot2
+### Local SSIM with a permutation test
 
-```{r, warning = FALSE, fig.show = "hold", out.width = "45%"}
-library(ggplot2)
-library(RColorBrewer)
+In the example below we use `w = 1` (a $3 \times 3$ moving window), `do_test = TRUE` and `local_test = TRUE` to obtain both the local SSIM surfaces and per-cell p-values. The chunks are set to `eval = FALSE` to keep the vignette build time short — when running interactively you can simply remove that option.
 
-#Visualize the SSIM result (the CIMD vs. Pampalon) on the map
-ggplot() +
-  geom_sf(data = df, aes(fill = SSIM), color = NA) +
-  scale_fill_gradientn(colors = brewer.pal(8, "PRGn"), limits = c(-1, 1)) +
-  theme_void() +
-  theme(
-    axis.title.x = element_blank(),
-    axis.title.y = element_blank(),
-    axis.text.x = element_blank(),
-    axis.text.y = element_blank(),
-    axis.ticks = element_blank()
-  )
+```{r, eval = FALSE}
+# Comparison 1: summer vs summer
+p1_l <- ssim_raster(
+  fwi_0816_bc, fwi_0818_bc,
+  global     = FALSE,
+  w          = 1,
+  do_test    = TRUE,
+  local_test = TRUE,
+    fdr= TRUE,
+  R          = 999
+)
 
-#Visualize the SSIM result (the CIMD vs. commuting pattern) on the map
-ggplot() +
-  geom_sf(data = df_2, aes(fill = SSIM), color = NA) +
-  scale_fill_gradientn(colors =brewer.pal(8, "PRGn"), limits = c(-1, 1)) +
-  theme_void() +
-  theme(
-    axis.title.x = element_blank(),
-    axis.title.y = element_blank(),
-    axis.text.x = element_blank(),
-    axis.text.y = element_blank(),
-    axis.ticks = element_blank()
-  )
-
+# Comparison 2: summer vs fall
+p2_l <- ssim_raster(
+  fwi_0816_bc, fwi_1101_bc,
+  global     = FALSE,
+  w          = 1,
+  do_test    = TRUE,
+  local_test = TRUE,
+  fdr= TRUE,
+  R          = 999
+)
 ```
 
-# Reference
+### Visualizing the SSIM components with `tidyterra`
 
--   Brunsdon, C., Fotheringham, A.S. and Charlton, M. (2002). Geographically weighted summary statistics---a framework for localised exploratory data analysis. *Computers, Environment and Urban Systems*, 26(6), pp.501-524. <https://doi.org/10.1016/S0198-9715(01)00009-6>
--   Jones, E.L., Rendell, L., Pirotta, E. and Long, J.A. (2016). Novel application of a quantitative spatial comparison tool to species distribution data. *Ecological Indicators*, 70, pp.67-76. <https://doi.org/10.1016/j.ecolind.2016.05.051>
--   Lu, B., Harris, P., Charlton, M. and Brunsdon, C. (2014). The GWmodel R package: further topics for exploring spatial heterogeneity using geographically weighted models. *Geo-spatial Information Science*, 17(2), pp.85-101. <https://doi.org/10.1080/10095020.2014.917453>
--   Wang, Z., Bovik, A.C., Sheikh, H.R. and Simoncelli, E.P. (2004). Image quality assessment: from error visibility to structural similarity. *IEEE transactions on image processing*, 13(4), pp.600-612. <https://doi.org/10.1109/TIP.2003.819861>
+We re-project the SSIM result to an Albers Equal-Area projection (EPSG:3005, the standard projection for Statistics Canada / British Columbia) for area-faithful display, then use `tidyterra::geom_spatraster()` to facet over the four SSIM layers:
+
+```{r, eval = FALSE}
+crs_albers <- "EPSG:3005"
+
+# Re-project local SSIM result (continuous values → bilinear)
+p1_l_alb <- terra::project(p1_l, crs_albers, method = "bilinear")
+
+# Select SSIM + components and assign panel labels
+ssim_maps_alb <- p1_l_alb[[c("SSIM", "SIM", "SIV", "SIP")]]
+facet_labs <- c(SSIM = "a", SIM = "b", SIV = "c", SIP = "d")
+
+gg <- ggplot() +
+  geom_spatraster(data = ssim_maps_alb) +
+  facet_wrap(~lyr, ncol = 2, labeller = labeller(lyr = facet_labs)) +
+  scale_fill_viridis_c(
+    limits   = c(-1, 1),
+    na.value = "transparent",
+    name     = "Values"
+  ) +
+  coord_sf(crs = crs_albers, expand = FALSE) +
+  theme_minimal() +
+  theme(
+    strip.text       = element_text(size = 14, face = "bold", hjust = 0),
+    strip.background = element_blank(),
+    legend.title     = element_text(size = 13, face = "bold"),
+    legend.text      = element_text(size = 11),
+    panel.background = element_blank(),
+    panel.grid       = element_blank()
+  )
+gg
+```
+
+### Comparing two SSIM rasters side-by-side with `patchwork`
+
+A common workflow is to compare a baseline image against several follow-up images and place the resulting SSIM maps in a single figure. Below we build one panel for each comparison (summer vs summer; summer vs fall) and combine them with a shared legend:
+
+```{r, eval = FALSE}
+# Re-project the second comparison and keep only SSIM
+p2_l_alb         <- terra::project(p2_l, crs_albers, method = "bilinear")
+ssim_maps_alb_p2 <- p2_l_alb[[c("SSIM")]]
+
+ssim_maps_alb_p2 <- p2_l_alb[[c("SSIM", "SIM", "SIV", "SIP")]]
+facet_labs <- c(SSIM = "a", SIM = "b", SIV = "c", SIP = "d")
+
+gg2 <- ggplot() +
+  geom_spatraster(data = ssim_maps_alb_p2) +
+  facet_wrap(~lyr, ncol = 2, labeller = labeller(lyr = facet_labs)) +
+  scale_fill_viridis_c(
+    limits   = c(-1, 1),
+    na.value = "transparent",
+    name     = "Values"
+  ) +
+  coord_sf(crs = crs_albers, expand = FALSE) +
+  theme_minimal() +
+  theme(
+    strip.text       = element_text(size = 14, face = "bold", hjust = 0),
+    strip.background = element_blank(),
+    legend.title     = element_text(size = 13, face = "bold"),
+    legend.text      = element_text(size = 11),
+    panel.background = element_blank(),
+    panel.grid       = element_blank())
+gg2
+```
+
+We expect the summer–summer comparison (panel **a**) to show high SSIM values across most of British Columbia, whereas the summer–fall comparison (panel **b**) should show substantially lower similarity, reflecting the seasonal shift from dry summer fire weather to cooler, wetter fall conditions.
+
+### Per-cell p-value maps
+
+When `do_test = TRUE` and `local_test = TRUE`, the returned `SpatRaster` also contains `SSIM_p`, `SIM_p`, `SIV_p`, and `SIV_p` layers, which can be plotted directly:
+
+```{r, eval = FALSE}
+p_maps <- p1_l[[c("SSIM_p", "SIM_p", "SIV_p", "SIV_p")]]
+plot(p_maps,
+     main = c("p-value: SSIM", "p-value: SIM",
+              "p-value: SIV",  "p-value: SIP"))
+```
+
+## References
+
+* Brunsdon, C., Fotheringham, A.S. and Charlton, M. (2002). Geographically weighted summary statistics — a framework for localised exploratory data analysis. *Computers, Environment and Urban Systems*, 26(6), pp. 501–524. <https://doi.org/10.1016/S0198-9715(01)00009-6>
+* Dimitrakopoulos, A.P., Bemmerzouk, A.M. and Mitsopoulos, I.D. (2011). Evaluation of the Canadian fire weather index system in an eastern Mediterranean environment. *Meteorological Applications*, 18(1), pp. 83–93. <https://doi.org/10.1002/met.214>
+* Lu, B., Harris, P., Charlton, M. and Brunsdon, C. (2014). The GWmodel R package: further topics for exploring spatial heterogeneity using geographically weighted models. *Geo-spatial Information Science*, 17(2), pp. 85–101. <https://doi.org/10.1080/10095020.2014.917453>
+* Wang, Z., Bovik, A.C., Sheikh, H.R. and Simoncelli, E.P. (2004). Image quality assessment: from error visibility to structural similarity. *IEEE Transactions on Image Processing*, 13(4), pp. 600–612. <https://doi.org/10.1109/TIP.2003.819861>
+* Benjamini, Y. and Hochberg, Y. (1995). Controlling the false discovery rate: a practical and powerful approach to multiple testing. *Journal of the Royal Statistical Society: Series B*, 57(1), pp. 289–300. <https://doi.org/10.1111/j.2517-6161.1995.tb02031.x>
